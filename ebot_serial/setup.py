@@ -24,6 +24,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'cmdvel_to_arduino = ebot_serial.cmdvel_to_ardiuno:main',
+            'twist_to_stamped = ebot_serial.twist_to_stamped:main',
+
         ],
     },
 )
