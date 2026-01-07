@@ -1,0 +1,283 @@
+<?xml version="1.0"?>
+<robot name="ebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
+
+  <!-- ===================== -->
+  <!-- PROPERTIES -->
+  <!-- ===================== -->
+  <xacro:property name="base_mass" value="46.034" />
+  <xacro:property name="wheel_mass" value="2.637" />
+
+  <!-- ===================== -->
+  <!-- INERTIA MACROS -->
+  <!-- ===================== -->
+  <xacro:macro name="box_inertia" params="b_mass b_x b_y b_z">
+    <mass value="${b_mass}" />
+    <inertia ixx="${b_mass*(b_y*b_y+b_z*b_z)/12}"
+             iyy="${b_mass*(b_x*b_x+b_z*b_z)/12}"
+             izz="${b_mass*(b_x*b_x+b_y*b_y)/12}"
+             ixy="0" ixz="0" iyz="0"/>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="c_mass r l">
+    <mass value="${c_mass}" />
+    <inertia ixx="${c_mass*(3*r*r+l*l)/12}"
+             iyy="${c_mass*(r*r)/2}"
+             izz="${c_mass*(3*r*r+l*l)/12}"
+             ixy="0" ixz="0" iyz="0"/>
+  </xacro:macro>
+
+  <!-- ===================== -->
+  <!-- BASE -->
+  <!-- ===================== -->
+  <link name="ebot_base_link"/>
+
+  <link name="base_footprint"/>
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="ebot_base_link"/>
+    <child link="base_footprint"/>
+  </joint>
+
+  <link name="ebot_base">
+    <inertial>
+      <origin xyz="0 0 0.12"/>
+      <xacro:box_inertia b_mass="${base_mass}" b_x="0.585" b_y="0.50" b_z="0.25"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.07"/>
+      <geometry>
+        <box size="0.510 0.30 0.10"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 0.8"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.12"/>
+      <geometry>
+        <box size="0.585 0.50 0.25"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_link_joint" type="fixed">
+    <parent link="ebot_base_link"/>
+    <child link="ebot_base"/>
+  </joint>
+
+  <!-- ===================== -->
+  <!-- DRIVE WHEELS -->
+  <!-- ===================== -->
+
+  <!-- Front Right -->
+  <link name="FWR">
+    <inertial>
+      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.08" l="0.05"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.08"/>
+      </geometry>
+      <material name="wheel_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="FWRJ" type="continuous">
+    <origin xyz="0 -0.20 0.045"/>
+    <parent link="ebot_base"/>
+    <child link="FWR"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- Front Left -->
+  <link name="FWL">
+    <inertial>
+      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.08" l="0.05"/>
+    </inertial>
+    <visual>
+      <origin rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.08"/>
+      </geometry>
+     <material name="wheel_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.08"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="FWLJ" type="continuous">
+    <origin xyz="0 0.20 0.045"/>
+    <parent link="ebot_base"/>
+    <child link="FWL"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ===================== -->
+  <!-- OMNI CASTERS (SWIVEL + ROLL) -->
+  <!-- ===================== -->
+
+  <!-- ===================== -->
+<!-- BALL CASTERS (4-DIRECTION SUPPORT) -->
+<!-- ===================== -->
+
+<!-- FRONT ball caster -->
+<link name="BC_FRONT">
+  <visual>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+    <material name="wheel_black"/>
+  </visual>
+  <collision>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="BC_FRONT_J" type="fixed">
+  <origin xyz="0.20 0.1 -0.0200"/>
+  <parent link="ebot_base"/>
+  <child link="BC_FRONT"/>
+</joint>
+
+<!-- BACK ball caster -->
+<link name="BC_BACK">
+  <visual>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+    <material name="wheel_black"/>
+  </visual>
+  <collision>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="BC_BACK_J" type="fixed">
+  <origin xyz="-0.19 0.1 -0.0200"/>
+  <parent link="ebot_base"/>
+  <child link="BC_BACK"/>
+</joint>
+
+<!-- LEFT ball caster -->
+<link name="BC_LEFT">
+  <visual>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+    <material name="wheel_black"/>
+  </visual>
+  <collision>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="BC_LEFT_J" type="fixed">
+  <origin xyz="0.20 -0.1 -0.0200"/>
+  <parent link="ebot_base"/>
+  <child link="BC_LEFT"/>
+</joint>
+
+<!-- RIGHT ball caster -->
+<link name="BC_RIGHT">
+  <visual>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+    <material name="wheel_black"/>
+  </visual>
+  <collision>
+    <geometry>
+      <sphere radius="0.015"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="BC_RIGHT_J" type="fixed">
+  <origin xyz="-0.19 -0.1 -0.0200"/>
+  <parent link="ebot_base"/>
+  <child link="BC_RIGHT"/>
+</joint> 
+  <gazebo reference="BC_FRONT">
+  <mu1>0.001</mu1>
+  <mu2>0.001</mu2>
+</gazebo>
+
+<gazebo reference="BC_BACK">
+  <mu1>0.001</mu1>
+  <mu2>0.001</mu2>
+</gazebo>
+
+<gazebo reference="BC_LEFT">
+  <mu1>0.001</mu1>
+  <mu2>0.001</mu2>
+</gazebo>
+
+<gazebo reference="BC_RIGHT">
+  <mu1>0.001</mu1>
+  <mu2>0.001</mu2>
+</gazebo>
+
+
+  <!-- ===================== -->
+  <!-- SENSORS -->
+  <!-- ===================== -->
+
+  <link name="laser">
+    <visual>
+      <geometry>
+        <cylinder length="0.04" radius="0.03"/>
+      </geometry>
+            <material name="wheel_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <origin xyz="0.2055 0 0.15"/>
+    <parent link="ebot_base"/>
+    <child link="laser"/>
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.10 0.015 0.008"/>
+      </geometry>
+            <material name="wheel_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0 0 0.1"/>
+    <parent link="ebot_base"/>
+    <child link="imu_link"/>
+  </joint>
+
+</robot>
+
+
