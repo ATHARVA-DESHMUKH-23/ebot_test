@@ -37,6 +37,8 @@ class FakeHWInterface(Node):
         self.right_ticks = 0.0
         self.last_time = time.time()
 
+        self.MAX_LINEAR_SPEED = 1.5   # m/s (calibrated)
+
         # ---------------- ROS ----------------
         self.create_subscription(Twist, '/cmd_vel', self.cmd_cb, 10)
         self.enc_pub = self.create_publisher(
@@ -57,6 +59,16 @@ class FakeHWInterface(Node):
     def cmd_cb(self, msg):
         self.v_cmd = msg.linear.x
         self.w_cmd = msg.angular.z
+
+    def cmdvel_to_motor_units(self, v_ms, w_rads):
+        # linear velocity mapping
+        v_unit = (v_ms / self.MAX_LINEAR_SPEED) * 255.0
+
+        # angular velocity mapping
+        w_unit = (w_rads * self.WHEEL_BASE / 2.0) / self.MAX_LINEAR_SPEED * 255.0
+
+        return v_unit, w_unit
+
 
     # ------------------------------------------------
     def read_serial(self):
@@ -97,8 +109,7 @@ class FakeHWInterface(Node):
             v = -self.serial_v
             w = -self.serial_w
         else:
-            v = self.v_cmd
-            w = self.w_cmd
+            v, w = self.cmdvel_to_motor_units(self.v_cmd, self.w_cmd)
 
         # -------- ACC LIMIT (same as Arduino) --------
         self.v_current += max(min(v - self.v_current, self.ACC_STEP), -self.ACC_STEP)
