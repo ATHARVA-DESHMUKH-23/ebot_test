@@ -1,6 +1,0 @@
-source;share/ebot_serial/hook/pythonpath.ps1
-source;share/ebot_serial/hook/pythonpath.dsv
-source;share/ebot_serial/hook/pythonpath.sh
-source;share/ebot_serial/hook/ament_prefix_path.ps1
-source;share/ebot_serial/hook/ament_prefix_path.dsv
-source;share/ebot_serial/hook/ament_prefix_path.sh
