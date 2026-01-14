@@ -7,7 +7,7 @@ class CmdVelToArduino(Node):
     def __init__(self):
         super().__init__('cmdvel_to_arduino')
 
-        self.serial = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
+        self.serial = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 
         self.create_subscription(
             Twist,

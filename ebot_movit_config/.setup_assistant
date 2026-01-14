@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: ebot_description
+    relative_path: models/ebot/ebot_description.xacro
+  srdf:
+    relative_path: config/ebot.srdf
+  package_settings:
+    author_name: Atharva Deshmukh
+    author_email: atharvad2366@gmail.com
+    generated_timestamp: 1768373715
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

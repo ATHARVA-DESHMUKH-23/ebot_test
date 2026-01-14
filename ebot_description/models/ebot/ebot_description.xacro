@@ -2,6 +2,10 @@
 <robot name="ebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
+  <xacro:include filename="$(find open_manipulator_description)/urdf/open_manipulator_x/open_manipulator_x_arm.urdf.xacro"/>
+
+
+
 
   <!-- ===================== -->
   <!-- PROPERTIES -->
@@ -27,6 +31,8 @@
              izz="${c_mass*(3*r*r+l*l)/12}"
              ixy="0" ixz="0" iyz="0"/>
   </xacro:macro>
+
+  
 
   <!-- ===================== -->
   <!-- BASE -->
@@ -54,9 +60,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0.12"/>
+      <origin xyz="0 0 0.07"/>
       <geometry>
-        <box size="0.585 0.50 0.25"/>
+        <box size="0.510 0.30 0.10"/>
       </geometry>
     </collision>
   </link>
@@ -65,6 +71,14 @@
     <parent link="ebot_base_link"/>
     <child link="ebot_base"/>
   </joint>
+
+  <xacro:open_manipulator_x prefix="arm_"/>
+  <joint name="ebot_to_arm_joint" type="fixed">
+    <parent link="ebot_base"/>
+    <child link="arm_link1"/>
+    <origin xyz="0 0 0.30" rpy="0 0 0"/>
+  </joint>
+
 
   <!-- ===================== -->
   <!-- DRIVE WHEELS -->
