@@ -1,0 +1,26 @@
+/servo_node:
+  ros__parameters:
+    move_group_name: arm
+    planning_frame: ebot_base_link
+    ee_frame_name: arm_end_effector_link
+
+    command_in_type: "twist"
+    cartesian_command_in_topic: "/servo_node/delta_twist_cmds"
+
+    command_out_type: "trajectory"
+    publish_period: 0.01
+
+    linear_scale: 0.5
+    rotational_scale: 0.5
+
+    collision_check_rate: 10.0
+    self_collision_proximity_threshold: 0.02
+    scene_collision_proximity_threshold: 0.02
+
+    incoming_command_timeout: 0.1
+
+    singularity_threshold: 0.05
+    hard_stop_singularity_threshold: 0.02
+    singularity_avoidance_strength: 0.05
+
+    use_sim_time: true

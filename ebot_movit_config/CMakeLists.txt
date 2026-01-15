@@ -14,3 +14,13 @@ endif()
 
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(FILES .setup_assistant DESTINATION share/${PROJECT_NAME})
+install(
+  PROGRAMS
+    scripts/arm_teleop_keyboard.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+install(
+  PROGRAMS
+    scripts/arm_move_action_test.py
+  DESTINATION lib/${PROJECT_NAME}
+) 
