@@ -17,6 +17,14 @@
   <xacro:property name="l3_half" value="0.125"/>
   <xacro:property name="l4_half" value="0.10"/>
 
+    <!-- ===================== -->
+  <!-- MATERIALS -->
+  <!-- ===================== -->
+  <material name="wheel_black">
+    <color rgba="0.02 0.02 0.02 1.0"/>
+  </material>
+
+
   <!-- ===================== -->
   <!-- INERTIA MACRO -->
   <!-- ===================== -->
@@ -153,6 +161,38 @@
     <axis xyz="0 1 0"/>
     <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
   </joint>
+
+  <link name="tool0"/>
+
+    <joint name="wrist_to_tool0" type="fixed">
+      <parent link="arm_link_4"/>
+      <child link="tool0"/>
+      <!-- adjust xyz if needed -->
+      <origin xyz="0 0 ${l4}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- ee_link : physical tool -->
+  <link name="ee_link">
+    <visual>
+      <geometry>
+        <box size="0.04 0.04 0.02"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.04 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+    <joint name="tool0_to_ee" type="fixed">
+      <parent link="tool0"/>
+      <child link="ee_link"/>
+      <origin xyz="0.03 0 0"/>
+    </joint>
+
 
   
 
