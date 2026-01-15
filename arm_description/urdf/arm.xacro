@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===================== -->
+  <!-- PARAMETERS -->
+  <!-- ===================== -->
+  <xacro:property name="r" value="0.03"/>
+  <xacro:property name="m" value="2.0"/>
+
+  <xacro:property name="l1" value="0.20"/>
+  <xacro:property name="l2" value="0.30"/>
+  <xacro:property name="l3" value="0.25"/>
+  <xacro:property name="l4" value="0.20"/>
+
+  <xacro:property name="l1_half" value="0.10"/>
+  <xacro:property name="l2_half" value="0.15"/>
+  <xacro:property name="l3_half" value="0.125"/>
+  <xacro:property name="l4_half" value="0.10"/>
+
+  <!-- ===================== -->
+  <!-- INERTIA MACRO -->
+  <!-- ===================== -->
+  <xacro:macro name="cyl_inertia" params="m r l">
+    <mass value="${m}"/>
+    <inertia
+      ixx="${m*(3*r*r + l*l)/12}"
+      iyy="${m*(3*r*r + l*l)/12}"
+      izz="${m*(r*r)/2}"
+      ixy="0" ixz="0" iyz="0"/>
+  </xacro:macro>
+
+  <!-- ===================== -->
+  <!-- ARM BASE -->
+  <!-- ===================== -->
+  <link name="arm_base_link"/>
+
+  <!-- ===================== -->
+  <!-- LINK 1 -->
+  <!-- ===================== -->
+  <link name="arm_link_1">
+    <inertial>
+      <origin xyz="0 0 ${l1_half}"/>
+      <xacro:cyl_inertia m="${m}" r="${r}" l="${l1}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${l1_half}"/>
+      <geometry>
+        <cylinder length="${l1}" radius="${r}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${l1_half}"/>
+      <geometry>
+        <cylinder length="${l1}" radius="${r}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_rotation_joint" type="revolute">
+    <parent link="arm_base_link"/>
+    <child link="arm_link_1"/>
+    <origin xyz="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="20" velocity="1.5"/>
+  </joint>
+
+  <!-- ===================== -->
+  <!-- LINK 2 -->
+  <!-- ===================== -->
+  <link name="arm_link_2">
+    <inertial>
+      <origin xyz="0 0 ${l2_half}"/>
+      <xacro:cyl_inertia m="${m}" r="${r}" l="${l2}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${l2_half}"/>
+      <geometry>
+        <cylinder length="${l2}" radius="${r}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${l2_half}"/>
+      <geometry>
+        <cylinder length="${l2}" radius="${r}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="arm_link_1"/>
+    <child link="arm_link_2"/>
+    <origin xyz="0 0 ${l1}"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="20" velocity="1.5"/>
+  </joint>
+
+  <!-- ===================== -->
+  <!-- LINK 3 -->
+  <!-- ===================== -->
+  <link name="arm_link_3">
+    <inertial>
+      <origin xyz="0 0 ${l3_half}"/>
+      <xacro:cyl_inertia m="${m}" r="${r}" l="${l3}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${l3_half}"/>
+      <geometry>
+        <cylinder length="${l3}" radius="${r}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${l3_half}"/>
+      <geometry>
+        <cylinder length="${l3}" radius="${r}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="elbow_joint" type="revolute">
+    <parent link="arm_link_2"/>
+    <child link="arm_link_3"/>
+    <origin xyz="0 0 ${l2}"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="15" velocity="1.5"/>
+  </joint>
+
+  <!-- ===================== -->
+  <!-- LINK 4 -->
+  <!-- ===================== -->
+  <link name="arm_link_4">
+    <inertial>
+      <origin xyz="0 0 ${l4_half}"/>
+      <xacro:cyl_inertia m="1.0" r="0.025" l="${l4}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${l4_half}"/>
+      <geometry>
+        <cylinder length="${l4}" radius="0.025"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${l4_half}"/>
+      <geometry>
+        <cylinder length="${l4}" radius="0.025"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wrist_joint" type="revolute">
+    <parent link="arm_link_3"/>
+    <child link="arm_link_4"/>
+    <origin xyz="0 0 ${l3}"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
+  </joint>
+
+  
+
+  <ros2_control name="ArmSystem" type="system">
+    <hardware>
+      <!-- Fake hardware for simulation / RViz -->
+      <plugin>fake_components/GenericSystem</plugin>
+
+    </hardware>
+
+    <joint name="base_rotation_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="shoulder_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="elbow_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="wrist_joint">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  
+    <joint name="FWRJ">
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="FWLJ">
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+  </ros2_control>
+
+</robot>

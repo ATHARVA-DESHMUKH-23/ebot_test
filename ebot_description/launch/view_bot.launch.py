@@ -1,14 +1,18 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.substitutions import Command
+from launch.substitutions import Command, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
 import os
 
 
 def generate_launch_description():
 
-    # Path to xacro file
+    # -----------------------------
+    # Paths
+    # -----------------------------
     pkg_ebot_description = get_package_share_directory('ebot_description')
+
     xacro_file = os.path.join(
         pkg_ebot_description,
         'models',
@@ -16,29 +20,64 @@ def generate_launch_description():
         'ebot_description.xacro'
     )
 
-    # Robot description parameter
+    controllers_yaml = PathJoinSubstitution([
+        FindPackageShare('ebot_description'),
+        'config',
+        'arm_controllers.yaml'
+    ])
+
+    # -----------------------------
+    # Robot description
+    # -----------------------------
     robot_description = Command([
         'xacro ', xacro_file
     ])
 
+    # -----------------------------
+    # Robot State Publisher
+    # -----------------------------
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[{
+            'robot_description': robot_description
+        }]
+    )
+
+    # -----------------------------
+    # ros2_control node
+    # -----------------------------
+    ros2_control_node = Node(
+        package='controller_manager',
+        executable='ros2_control_node',
+        parameters=[
+            {'robot_description': robot_description},
+            controllers_yaml
+        ],
+        output='screen'
+    )
+
+    # -----------------------------
+    # Controller spawners
+    # -----------------------------
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster'],
+        output='screen'
+    )
+
+    arm_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['arm_controller'],
+        output='screen'
+    )
+
     return LaunchDescription([
-
-        # Robot State Publisher
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{
-                'robot_description': robot_description
-            }]
-        ),
-
-        # Joint State Publisher (no GUI)
-        Node(
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-            name='joint_state_publisher',
-            output='screen'
-        ),
+        robot_state_publisher,
+        ros2_control_node,
+        joint_state_broadcaster_spawner,
+        arm_controller_spawner
     ])

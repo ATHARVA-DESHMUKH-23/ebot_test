@@ -2,6 +2,7 @@
 <robot name="ebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
+  <xacro:include filename="$(find arm_description)/urdf/arm.xacro" />
 
   <!-- ===================== -->
   <!-- PROPERTIES -->
@@ -65,6 +66,16 @@
     <parent link="ebot_base_link"/>
     <child link="ebot_base"/>
   </joint>
+
+  <!-- ===================== -->
+  <!-- ARM MOUNT -->
+  <!-- ===================== -->
+  <joint name="arm_mount_joint" type="fixed">
+    <parent link="ebot_base"/>
+    <child link="arm_base_link"/>
+    <origin xyz="0 0 0.25" rpy="0 0 0"/>
+  </joint>
+
 
   <!-- ===================== -->
   <!-- DRIVE WHEELS -->
