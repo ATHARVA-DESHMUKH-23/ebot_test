@@ -30,6 +30,7 @@ setup(
             'fake_hw_interface = ebot_serial.fake_hw_interface:main',
             'encoder_odimetery = ebot_serial.encoder_odimetery:main',
             'arm_pose_commander = ebot_serial.arm_controller:main',
+            'moveit_cmd = ebot_serial.moveit_cmd:main',
 
         ],
     },

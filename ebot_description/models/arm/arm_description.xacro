@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ur5">
+
+  <!-- ================= MATERIAL ================= -->
+  <material name="grey">
+    <color rgba="0.7 0.7 0.7 1"/>
+  </material>
+
+  <!-- ================= ROS2 CONTROL ================= -->
+  <ros2_control name="UR5System" type="system">
+    <hardware>
+      <plugin>ros2_control_demo_hardware/GenericSystem</plugin>
+    </hardware>
+
+    <joint name="joint_1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+
+    <joint name="joint_2">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+
+    <joint name="joint_3">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+
+    <joint name="joint_4">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+
+    <joint name="joint_5">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+
+    <joint name="joint_6">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+    </joint>
+  </ros2_control>
+
+  <!-- ================= SERVO MACRO ================= -->
+  
+<xacro:macro name="servo_motor" params="name parent xyz axis">
+  <link name="${name}">
+    <visual>
+      <origin rpy="${axis == 'x' ? '0 1.5708 0' : axis == 'y' ? '1.5708 0 0' : '0 0 0'}"/>
+      <geometry>
+        <cylinder length="0.06" radius="0.035"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+
+    <!-- NO COLLISION -->
+  </link>
+
+  <joint name="${name}_fixed" type="fixed">
+    <parent link="${parent}"/>
+    <child link="${name}"/>
+    <origin xyz="${xyz}"/>
+  </joint>
+</xacro:macro>
+
+
+  <!-- ================= BASE ================= -->
+ <!-- WORLD -->
+<link name="world"/>
+
+<!-- BASE -->
+<link name="base_link">
+  <visual>
+    <geometry>
+      <cylinder length="0.05" radius="0.12"/>
+    </geometry>
+    <material name="grey"/>
+  </visual>
+</link>
+
+<!-- BASE ROTATION -->
+<joint name="base_rotation_joint" type="revolute">
+  <parent link="world"/>
+  <child link="base_link"/>
+  <origin xyz="0 0 0"/>
+  <axis xyz="0 0 1"/>
+  <limit lower="-03.28318" upper="3.28318" effort="50" velocity="2"/>
+</joint>
+
+<!-- BASE SERVO -->
+<xacro:servo_motor
+  name="servo_base"
+  parent="base_link"
+  xyz="0 0 0"
+  axis="z"/>
+
+
+
+  <!-- ================= JOINT 1 ================= -->
+  <joint name="joint_1" type="fixed">
+    <parent link="base_link"/>
+    <child link="link_1"/>
+    <origin xyz="0 0 0.089159"/>
+    <axis xyz="1 0 1"/>
+    <limit lower="-3.1416" upper="3.1416" effort="150" velocity="1.5"/>
+  </joint>
+
+  <xacro:servo_motor name="servo_1" parent="base_link" xyz="0 0 0.089159" axis="z"/>
+
+  <link name="link_1">
+    <visual>
+      <origin xyz="0 0 0.135"/>
+      <geometry>
+        <cylinder length="0.27" radius="0.045"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+
+  <!-- ================= JOINT 2 ================= -->
+  <joint name="joint_2" type="revolute">
+    <parent link="link_1"/>
+    <child link="link_2"/>
+    <origin xyz="-0.03 0.1 0.2"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.10" upper="0.0" effort="150" velocity="2.0"/>
+  </joint>
+
+  <xacro:servo_motor name="servo_2" parent="link_1" xyz="0 0.135 0" axis="y"/>
+
+  <link name="link_2">
+    <visual>
+      <origin xyz="0.2125 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder length="0.425" radius="0.04"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+
+  <!-- ================= JOINT 3 ================= -->
+  <joint name="joint_3" type="revolute">
+    <parent link="link_2"/>
+    <child link="link_3"/>
+    <origin xyz="0.365 -0.1 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.8" upper="2.8" effort="150" velocity="2.0"/>
+  </joint>
+
+  <xacro:servo_motor name="servo_3" parent="link_2" xyz="0.425 0 0" axis="y"/>
+
+  <link name="link_3">
+    <visual>
+      <origin xyz="0.196 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder length="0.392" radius="0.035"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+
+  <!-- ================= JOINT 4 ================= -->
+<joint name="joint_4" type="revolute">
+  <parent link="link_3"/>
+  <child link="link_4"/>
+
+  <!-- Explicit joint frame -->
+  <origin xyz="0.392 0.1 0" rpy="0 0 0"/>
+
+  <!-- True Y-axis rotation -->
+  <axis xyz="0 1 0"/>
+
+  <limit lower="-3.1416" upper="3.1416" effort="50" velocity="4.0"/>
+</joint>
+<link name="link_4">
+  <visual>
+    <!-- Align cylinder correctly -->
+    <origin xyz="0 0 0" rpy="0 0  1.5"/>
+    <geometry>
+      <cylinder length="0.11" radius="0.03"/>
+    </geometry>
+    <material name="grey"/>
+  </visual>
+</link>
+
+
+  <!-- ================= JOINT 5 ================= -->
+<!-- ================= JOINT 5 ================= -->
+<joint name="joint_5" type="revolute">
+  <parent link="link_4"/>
+  <child link="link_5"/>
+
+  <origin xyz="0 0 0.10915" rpy="0 0 0"/>
+
+  <!-- Rotation about Z axis -->
+  <axis xyz="0 0 1"/>
+
+  <limit lower="-3.1416" upper="3.1416" effort="50" velocity="4.0"/>
+</joint>
+
+<xacro:servo_motor
+  name="servo_5"
+  parent="link_4"
+  xyz="0 0 0.10915"
+  axis="z"/>
+<link name="link_5">
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <cylinder length="0.09" radius="0.025"/>
+    </geometry>
+    <material name="grey"/>
+  </visual>
+</link>
+
+
+  <!-- ================= JOINT 6 ================= -->
+<joint name="joint_6" type="revolute">
+  <parent link="link_5"/>
+  <child link="link_6"/>
+
+  <!-- Do NOT rotate the joint frame -->
+  <origin xyz="0 0 0.09465" rpy="1.5 0 0"/>
+
+  <!-- Rotate along the link's own axis (cylinder Z axis) -->
+  <axis xyz="0 0 1"/>
+
+  <limit lower="-2.1416" upper="2.9416" effort="50" velocity="4.0"/>
+</joint>
+
+<xacro:servo_motor
+  name="servo_6"
+  parent="link_5"
+  xyz="0 0 0.09465"
+  axis="z"/>
+<link name="link_6">
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <cylinder length="0.08" radius="0.02"/>
+    </geometry>
+    <material name="grey"/>
+  </visual>
+</link>
+
+
+
+</robot>

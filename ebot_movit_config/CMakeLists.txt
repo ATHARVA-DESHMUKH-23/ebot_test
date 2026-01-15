@@ -24,3 +24,8 @@ install(
     scripts/arm_move_action_test.py
   DESTINATION lib/${PROJECT_NAME}
 ) 
+# install(
+#   PROGRAMS
+#     scripts/moveit_cmd.py
+#   DESTINATION lib/${PROJECT_NAME}
+# )
