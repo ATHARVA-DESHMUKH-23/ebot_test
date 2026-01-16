@@ -18,8 +18,6 @@ class CartesianServo(Node):
         self.L2 = 0.25
         self.dt = 0.01   # 100 Hz
 
-        
-
         # Joint state storage
         self.q = np.zeros(2)
         self.received_js = False
