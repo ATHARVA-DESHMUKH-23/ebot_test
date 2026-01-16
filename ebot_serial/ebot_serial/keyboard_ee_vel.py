@@ -16,7 +16,7 @@ class KeyboardEEVel(Node):
 
         self.pub = self.create_publisher(Twist, '/ee_velocity', 10)
 
-        self.speed = 0.05
+        self.speed = 0.1
         self.cmd = Twist()   # latched command
 
         self.settings = termios.tcgetattr(sys.stdin)
@@ -26,6 +26,7 @@ class KeyboardEEVel(Node):
             "----------------------------\n"
             "w / s : +Y / -Y\n"
             "a / d : -X / +X\n"
+            "q / e : +Yaw / -Yaw\n"
             "space : stop\n"
             "Ctrl+C : quit"
         )
@@ -45,6 +46,9 @@ class KeyboardEEVel(Node):
     def loop(self):
         key = self.get_key()
 
+        if key in ['w', 'a', 's', 'd']:
+            self.cmd.angular.z = 0.0
+
         if key == 'w':
             self.cmd.linear.y = self.speed
             self.cmd.linear.x = 0.0
@@ -60,6 +64,12 @@ class KeyboardEEVel(Node):
         elif key == 'd':
             self.cmd.linear.x = self.speed
             self.cmd.linear.y = 0.0
+        
+        elif key == 'q':
+            self.cmd.angular.z = 0.5
+
+        elif key == 'e':
+            self.cmd.angular.z = -0.5
 
         elif key == ' ':
             self.cmd = Twist()   # stop
