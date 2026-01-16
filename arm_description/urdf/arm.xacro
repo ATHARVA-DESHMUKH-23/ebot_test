@@ -138,7 +138,7 @@
   <!-- ===================== -->
   <!-- LINK 4 -->
   <!-- ===================== -->
-  <link name="arm_link_4">
+  <!-- <link name="arm_link_4">
     <inertial>
       <origin xyz="0 0 ${l4_half}"/>
       <xacro:cyl_inertia m="1.0" r="0.025" l="${l4}"/>
@@ -155,22 +155,22 @@
         <cylinder length="${l4}" radius="0.025"/>
       </geometry>
     </collision>
-  </link>
+  </link> -->
 
-  <joint name="wrist_joint" type="revolute">
+  <!-- <joint name="wrist_joint" type="revolute">
     <parent link="arm_link_3"/>
     <child link="arm_link_4"/>
     <origin xyz="0 0 ${l3}"/>
     <axis xyz="0 1 0"/>
     <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
-  </joint>
+  </joint> -->
   <!-- ===================== -->
   <!-- LINK 5 -->
   <!-- ===================== -->
   <!-- ===================== -->
-<!-- LINK 5 -->
-<!-- ===================== -->
-  <link name="arm_link_5">
+  <!-- LINK 5 -->
+  <!-- ===================== -->
+  <!-- <link name="arm_link_5">
     <inertial>
       <origin xyz="0 0 ${l5_half}"/>
       <xacro:cyl_inertia m="1.0" r="0.025" l="${l5}"/>
@@ -189,21 +189,19 @@
         <cylinder length="${l5}" radius="0.025"/>
       </geometry>
     </collision>
-  </link>
+  </link> -->
 
   <!-- Wrist roll joint (PERPENDICULAR) -->
-  <joint name="wrist_roll_joint" type="revolute">
+  <!-- <joint name="wrist_roll_joint" type="revolute">
     <parent link="arm_link_4"/>
     <child link="arm_link_5"/>
 
-    <!-- rotate joint frame by 90 deg -->
     <origin xyz="0 0 ${l4}" rpy="1.5708 0 0"/>
 
-    <!-- rotation axis now perpendicular -->
     <axis xyz="0 1 0"/>
 
     <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
-  </joint>
+  </joint> -->
 
 
     <!-- ===================== -->
@@ -212,10 +210,10 @@
   <link name="tool0"/>
 
     <joint name="wrist_to_tool0" type="fixed">
-      <parent link="arm_link_5"/>
+      <parent link="arm_link_3"/>
       <child link="tool0"/>
       <!-- adjust xyz if needed -->
-      <origin xyz="0 0 ${l5}" rpy="1.5708 0 0"/>
+      <origin xyz="0 0 ${l3}" rpy="0 0 0"/>
     </joint>
 
     <!-- ee_link : physical tool -->
@@ -268,7 +266,7 @@
       <state_interface name="velocity"/>
     </joint>
 
-    <joint name="wrist_joint">
+    <!-- <joint name="wrist_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -278,7 +276,7 @@
       <command_interface name="position"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
-    </joint>
+    </joint> -->
   
     <joint name="FWRJ">
       <state_interface name="position"/>

@@ -29,6 +29,8 @@ setup(
             'cmdvel_to_odom = ebot_serial.cmdvel_to_odom:main',
             'fake_hw_interface = ebot_serial.fake_hw_interface:main',
             'encoder_odimetery = ebot_serial.encoder_odimetery:main',
+            'cartesian_servo = ebot_serial.cartesian_servo:main',
+            'keyboard_ee_vel = ebot_serial.keyboard_ee_vel:main',
 
         ],
     },
