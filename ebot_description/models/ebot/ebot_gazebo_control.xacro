@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="ebot_gazebo_ros2_control">
+
+    <gazebo>
+      <plugin
+        filename="gz_ros2_control-system"
+        name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+
+        <parameters>
+          $(find ebot_description)/config/arm_controllers.yaml
+        </parameters>
+
+        <ros>
+          <remapping>
+            /controller_manager/robot_description:=/robot_description
+          </remapping>
+        </ros>
+
+      </plugin>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

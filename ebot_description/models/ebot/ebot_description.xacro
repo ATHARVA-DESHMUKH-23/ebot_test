@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 <robot name="ebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+  <xacro:arg name="use_gazebo" default="true"/>
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
   <xacro:include filename="$(find arm_description)/urdf/arm.xacro" />
+  <xacro:include filename="$(find ebot_description)/models/ebot/ebot_gazebo_control.xacro"/>
+
+  <xacro:ebot_arm/>
+
 
   <!-- ===================== -->
   <!-- PROPERTIES -->
@@ -288,6 +292,9 @@
     <parent link="ebot_base"/>
     <child link="imu_link"/>
   </joint>
+
+
+<xacro:ebot_gazebo_ros2_control/>
 
 </robot>
 

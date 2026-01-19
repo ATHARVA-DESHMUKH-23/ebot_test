@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:macro name="ebot_arm">
+
   <!-- ===================== -->
   <!-- PARAMETERS -->
   <!-- ===================== -->
@@ -242,11 +244,12 @@
   
 
   <ros2_control name="ArmSystem" type="system">
-    <hardware>
-      <!-- Fake hardware for simulation / RViz -->
-      <plugin>fake_components/GenericSystem</plugin>
+  <hardware>
+    <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    <!-- <plugin>mock_components/GenericSystem</plugin> -->
+    <param name="initial_positions">0 0 0 0</param>
+  </hardware>
 
-    </hardware>
 
     <joint name="base_rotation_joint">
       <command_interface name="position"/>
@@ -289,5 +292,7 @@
     </joint>
 
   </ros2_control>
+
+  </xacro:macro>
 
 </robot>

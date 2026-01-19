@@ -5,16 +5,44 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    arm_position_controller:
-      type: position_controllers/JointGroupPositionController
+    # arm_position_controller:
+    #   type: position_controllers/JointGroupPositionController
+
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
 
 
-arm_position_controller:
+
+arm_controller:
   ros__parameters:
     joints:
       - shoulder_joint
       - elbow_joint
       - wrist_joint
+
+
+    # The controller will expect position commands as input for each of these joints.
+    command_interfaces:
+      - position
+
+    # Tells the controller that it should expect to receive position data as the state
+    # feedback from the hardware interface.
+    state_interfaces:
+      - position
+
+    # If true, When set to true, the controller will not use any feedback from the system
+    # (e.g., joint positions, velocities, efforts) to compute the control commands.
+    open_loop_control: false
+
+    # When set to true, it allows the controller to integrate the trajectory goals it receives.
+    # This means that if the goal trajectory only specifies positions, the controller will
+    # numerically integrate the positions to compute the velocities and accelerations required
+    # to follow the trajectory.
+    allow_integration_in_goal_trajectories: true
+
+    # Allow non-zero velocity at the end of the trajectory
+    allow_nonzero_velocity_at_trajectory_end: false
+
 
 
 # controller_manager:
