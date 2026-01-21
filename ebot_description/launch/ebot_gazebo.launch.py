@@ -80,6 +80,18 @@ def generate_launch_description():
         output='screen'
     )
 
+    diff_drive_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'diff_drive_controller',
+            '--controller-ros-args',
+            '--remap',
+            '/diff_drive_controller/cmd_vel:=/cmd_vel'
+        ],
+        output='screen'
+    )
+
     # -----------------------------
     # Robot State Publisher (DELAYED)
     # -----------------------------
@@ -113,6 +125,7 @@ def generate_launch_description():
 
         joint_state_broadcaster_spawner,
         arm_controller_spawner,
+        diff_drive_controller_spawner,
 
         delayed_rsp
     ])

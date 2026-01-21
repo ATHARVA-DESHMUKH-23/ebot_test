@@ -31,6 +31,9 @@ setup(
             'encoder_odimetery = ebot_serial.encoder_odimetery:main',
             'cartesian_servo = ebot_serial.cartesian_servo:main',
             'keyboard_ee_vel = ebot_serial.keyboard_ee_vel:main',
+            'ee_plotter = ebot_serial.ee_ploter:main',
+            'ee_velocity_estimator = ebot_serial.ee_velocity_estimator:main',
+            'ee_velocity_allocator = ebot_serial.ee_velocity_allocator:main',
 
         ],
     },

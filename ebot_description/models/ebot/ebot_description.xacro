@@ -77,7 +77,7 @@
   <joint name="arm_mount_joint" type="fixed">
     <parent link="ebot_base"/>
     <child link="arm_base_link"/>
-    <origin xyz="0 0 0.25" rpy="0 0 0"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
   </joint>
 
 
@@ -142,6 +142,31 @@
     <child link="FWL"/>
     <axis xyz="0 1 0"/>
   </joint>
+
+
+  <!-- ===================== -->
+  <!-- TRANSMISSIONS -->
+  <!-- ===================== -->
+
+  <transmission name="FWR_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FWRJ">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="FWR_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="FWL_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="FWLJ">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="FWL_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
   <!-- ===================== -->
   <!-- OMNI CASTERS (SWIVEL + ROLL) -->
