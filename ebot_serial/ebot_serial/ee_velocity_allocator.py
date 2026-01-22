@@ -115,10 +115,10 @@ class EEVelocityAllocator(Node):
         self.cmd_vel_pub.publish(base)
 
         # ---- Debug (slow rate OK) ----
-        self.get_logger().info(
-            f"r={r:.3f} | scale={scale:.2f} | "
-            f"arm=({ee_arm.linear.y:.2f}) base=({base.linear.y:.2f})"
-        )
+        # self.get_logger().info(
+        #     f"r={r:.3f} | scale={scale:.2f} | "
+        #     f"arm=({ee_arm.linear.y:.2f}) base=({base.linear.y:.2f})"
+        # )
 
 
 def main():
