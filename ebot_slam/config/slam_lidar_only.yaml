@@ -11,9 +11,9 @@ slam_toolbox:
     # Inputs
     scan_topic: /scan
     use_imu: false
-    imu_topic: /imu/data
-    use_odometry: true
-    provide_odom_frame: false
+    imu_topic: /imu/data_raw
+    use_odometry: false
+    provide_odom_frame: true
     publish_tf: true
 
     # IMU settings
@@ -29,7 +29,7 @@ slam_toolbox:
 
     # Motion thresholds
     minimum_travel_distance: 0.05
-    minimum_travel_heading: 0.05
+    minimum_travel_heading: 0.02
 
     map_update_interval: 1.0
     scan_buffer_size: 10

@@ -19,8 +19,15 @@ setup(
     zip_safe=True,
     maintainer='ebot',
     maintainer_email='ebot@todo.todo',
-    description='LiDAR-only SLAM package',
+    description='LiDAR + EKF + IMU SLAM package',
     license='Apache-2.0',
     tests_require=['pytest'],
-    entry_points={},
+
+    # 🔴 THIS WAS MISSING — THIS IS THE FIX
+    entry_points={
+        'console_scripts': [
+            'fake_odom = ebot_slam.fake_odom:main',
+            'imu_node = ebot_slam.imu_node:main',
+        ],
+    },
 )

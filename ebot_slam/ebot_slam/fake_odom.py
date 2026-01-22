@@ -23,17 +23,17 @@ class FakeOdom(Node):
         self.yaw = 0.0
 
         # Speeds
-        self.linear_speed = 0.10      # m/s (slow)
-        self.angular_speed = 0.30     # rad/s (slow turn)
+        self.linear_speed = 0.01      # m/s (slow)
+        self.angular_speed = 0.05     # rad/s (slow turn)
 
         # State machine
         self.state = 'FORWARD'
         self.state_time = 0.0
 
         # Timings (seconds)
-        self.forward_time = 4.0
-        self.rotate_time = 3.0
-        self.pause_time = 1.0
+        self.forward_time = 10.0
+        self.rotate_time = 5.0
+        self.pause_time = 10.0
 
     def update(self):
         self.state_time += self.dt
