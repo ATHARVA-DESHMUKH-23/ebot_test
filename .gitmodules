@@ -2,6 +2,6 @@
 	path = rplidar_ros
 	url = https://github.com/Slamtec/rplidar_ros.git
 	branch = ros2
-[submodule "src/rf2o_laser_odometry"]
-	path = src/rf2o_laser_odometry
+[submodule "rf2o_laser_odometry"]
+	path = rf2o_laser_odometry
 	url = https://github.com/MAPIRlab/rf2o_laser_odometry.git
