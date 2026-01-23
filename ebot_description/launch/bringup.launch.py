@@ -99,7 +99,7 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
         arm_controller_spawner,
         cartesian_servo,
-        ee_velocity_allocator,
+        # ee_velocity_allocator,
         cmdvel_to_arduino,
         fake_hw_interface,
         encoder_odometry
