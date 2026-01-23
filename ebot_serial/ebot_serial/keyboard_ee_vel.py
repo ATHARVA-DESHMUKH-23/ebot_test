@@ -15,7 +15,7 @@ class KeyboardEEVel(Node):
         super().__init__('keyboard_ee_vel')
 
         # MUST match Cartesian servo
-        self.pub = self.create_publisher(Twist, '/ee_velocity_arm', 10)
+        self.pub = self.create_publisher(Twist, '/ee_velocity', 10)
 
         self.speed_xy = 0.02   # m/s
         self.speed_z  = 0.02   # m/s

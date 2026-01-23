@@ -96,6 +96,7 @@ class EEVelocityAllocator(Node):
         # ---- Desired EE velocity (odom frame) ----
         vx = self.ee_cmd.linear.x
         vy = self.ee_cmd.linear.y
+        vz = self.ee_cmd.linear.z
         wz = self.ee_cmd.angular.z
 
         # ---- Split velocity ----
@@ -104,6 +105,7 @@ class EEVelocityAllocator(Node):
 
         ee_arm.linear.x = scale * vx
         ee_arm.linear.y = scale * vy
+        ee_arm.linear.z = scale * vz
         ee_arm.angular.z = scale * wz
 
         base.linear.y = (1.0 - scale) * vx
