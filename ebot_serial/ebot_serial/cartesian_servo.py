@@ -29,6 +29,13 @@ class CartesianServo(Node):
         self.max_qdot = 1.2
         self.lambda_dls = 0.02
 
+        # Joint jog
+        self.jog_qdot = np.zeros(4)
+        self.jog_active = False
+        self.jog_timeout = 5.0  # seconds
+        self.last_jog_time = self.get_clock().now()
+
+
         # INIT
         self.mode = "INIT"
         self.init_sent = False
@@ -38,6 +45,8 @@ class CartesianServo(Node):
         # Subscribers
         self.create_subscription(JointState, '/joint_states', self.joint_state_cb, 10)
         self.create_subscription(Twist, '/ee_velocity_arm', self.ee_vel_cb, 10)
+        self.create_subscription(JointState,'/joint_jog_arm',self.joint_jog_cb,10)
+
 
         # Publisher
         self.traj_pub = self.create_publisher(
@@ -52,6 +61,23 @@ class CartesianServo(Node):
     # ----------------------------
     # Callbacks
     # ----------------------------
+    def joint_jog_cb(self, msg):
+        # # Reset jog velocity
+        # self.jog_qdot[:] = 0.0
+
+        for i, name in enumerate(msg.name):
+            if name == 'base_rotation_joint':
+                self.jog_qdot[0] = msg.velocity[i]
+            elif name == 'shoulder_joint':
+                self.jog_qdot[1] = msg.velocity[i]
+            elif name == 'elbow_joint':
+                self.jog_qdot[2] = msg.velocity[i]
+            elif name == 'wrist_joint':
+                self.jog_qdot[3] = msg.velocity[i]
+
+        self.jog_active = True
+        self.last_jog_time = self.get_clock().now()
+
     def joint_state_cb(self, msg):
         try:
             self.q[0] = msg.position[msg.name.index('base_rotation_joint')]
@@ -138,6 +164,24 @@ class CartesianServo(Node):
             if np.linalg.norm(self.start_q - self.q) < self.pos_tol:
                 self.mode = "SERVO"
                 self.get_logger().info("Entered SERVO mode")
+            return
+        
+        # ----------------------------
+        # SERVO / JOG arbitration
+        # ----------------------------
+
+        # Check jog timeout
+        dt_jog = (self.get_clock().now() - self.last_jog_time).nanoseconds * 1e-9
+        if dt_jog > self.jog_timeout:
+            self.jog_active = False
+
+        # ----------------------------
+        # JOINT JOG HAS PRIORITY
+        # ----------------------------
+        if self.jog_active:
+            qdot = np.clip(self.jog_qdot, -self.max_qdot, self.max_qdot)
+            q_cmd = self.q + qdot * self.dt
+            self.send_trajectory(q_cmd, self.dt)
             return
 
         # SERVO
