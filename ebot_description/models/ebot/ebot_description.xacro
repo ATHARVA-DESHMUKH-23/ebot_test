@@ -2,10 +2,10 @@
 <robot name="ebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:arg name="use_gazebo" default="true"/>
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
-  <xacro:include filename="$(find arm_description)/urdf/arm.xacro" />
+  <xacro:include filename="$(find arm_description)/urdf/so101_new_calib.urdf.xacro" />
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot_gazebo_control.xacro"/>
 
-  <xacro:ebot_arm/>
+  <xacro:so101_new_calib_arm/>
 
 
   <!-- ===================== -->
