@@ -1,5 +1,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import TimerAction
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
@@ -53,11 +54,11 @@ def generate_launch_description():
     ros2_control_node = Node(
         package='controller_manager',
         executable='ros2_control_node',
+        output='screen',
         parameters=[
             {'robot_description': robot_description},
             controllers_yaml
-        ],
-        output='screen'
+        ]
     )
 
     # -----------------------------
@@ -77,9 +78,39 @@ def generate_launch_description():
         output='screen'
     )
 
+    gripper_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['gripper_controller'],
+        output='screen'
+    )
+
+    # Optional (enable when base is ready)
+    # diff_drive_controller_spawner = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     arguments=['diff_drive_controller'],
+    #     output='screen'
+    # )
+
+    # -----------------------------
+    # Delay controllers until ros2_control is ready
+    # -----------------------------
+    delayed_controller_spawners = TimerAction(
+        period=3.0,
+        actions=[
+            joint_state_broadcaster_spawner,
+            arm_controller_spawner,
+            gripper_controller_spawner,
+            # diff_drive_controller_spawner,
+        ]
+    )
+
+    # -----------------------------
+    # Launch description
+    # -----------------------------
     return LaunchDescription([
         robot_state_publisher,
         ros2_control_node,
-        joint_state_broadcaster_spawner,
-        arm_controller_spawner
+        delayed_controller_spawners
     ])

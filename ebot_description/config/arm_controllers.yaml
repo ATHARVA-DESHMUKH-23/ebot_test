@@ -11,7 +11,9 @@ controller_manager:
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-    
+    gripper_controller:
+      type: position_controllers/JointGroupPositionController
+
     diff_drive_controller:
       type: diff_drive_controller/DiffDriveController
 
@@ -22,6 +24,8 @@ arm_controller:
       - shoulder_joint
       - elbow_joint
       - wrist_joint
+      - wrist_roll_joint
+      - wrist_yaw_joint
 
 
     # The controller will expect position commands as input for each of these joints.
@@ -46,6 +50,16 @@ arm_controller:
     # Allow non-zero velocity at the end of the trajectory
     allow_nonzero_velocity_at_trajectory_end: false
 
+gripper_controller:
+  ros__parameters:
+    joints:
+      - right_finger_joint
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
 
 diff_drive_controller:
   ros__parameters:
