@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<robot name="wx250s" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/base/base.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/shoulder/shoulder.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/upper_arm/upper_arm.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/forearm/forearm.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/upper_forearm/upper_forearm.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/lower_forearm/lower_forearm.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/wrist/wrist.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/gripper/gripper.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/gripper_bar/gripper_bar.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/left_finger/left_finger.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/parts/right_finger/right_finger.xacro"/>
+
+  <xacro:property name="PI" value="3.14159274"/>
+  <xacro:macro name="ebot_arm_wx250s">
+  <link name="arm_base_link"/>
+
+  <xacro:base parent="arm_base_link">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:base>
+
+  <xacro:sholder parent="base_link">
+    <origin xyz="0.0 0.0 0.069" rpy="0 0 0" /> <!-- xyz="0.0 0.0 0.072" -->
+    <axis xyz="0 0 1"/>
+  </xacro:sholder>
+
+  <xacro:upper_arm parent="sholder_link">
+    <origin xyz="0.0 0.0 0.03865" rpy="0 0 0" />
+    <axis xyz="1 0 0"/>
+  </xacro:upper_arm>
+
+  <xacro:upper_forearm parent="upper_arm_link">
+    <origin xyz="0 -0.04975 0.25" rpy="0 0 ${-PI/2}" />
+    <axis xyz="0 1 0"/>
+  </xacro:upper_forearm>
+
+  <xacro:lower_forearm parent="upper_forearm_link">
+    <origin xyz="0.171 0 0" rpy="${PI} 0 0" />
+    <axis xyz="1 0 0"/>
+  </xacro:lower_forearm>  
+
+  <xacro:wrist parent="lower_forearm_link">
+    <origin xyz="0.075 0 0" rpy="0 ${PI} ${PI/2}" />
+    <axis xyz="1 0 0"/>
+  </xacro:wrist>
+
+  <xacro:gripper parent="wrist_link">
+    <origin xyz="0 -0.161 0" rpy="0 0 0" /> <!-- xyz="0 -0.065 0" -->
+    <axis xyz="0 1 0"/>
+  </xacro:gripper>
+
+  <xacro:gripper_bar parent="gripper_link">
+    <origin xyz="0 0 0" rpy="0 0 0" /> <!-- xyz="-0.0145 0 0" -->
+  </xacro:gripper_bar>
+
+  <xacro:left_finger parent="gripper_bar_link">
+    <origin xyz="0.04 0.03 0" rpy="0 0 ${PI/2}" />
+    <axis xyz="0 1 0"/>
+  </xacro:left_finger>
+
+  <xacro:right_finger parent="gripper_bar_link">
+    <origin xyz="-0.04 0.03 0" rpy="${PI} 0 ${PI/2}" />
+    <axis xyz="0 1 0"/>
+  </xacro:right_finger>
+</xacro:macro>
+</robot>

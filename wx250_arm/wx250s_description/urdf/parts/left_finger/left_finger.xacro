@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <xacro:macro name="left_finger" params="parent *joint_origin *joint_axis">
+	<joint name="left_finger_joint" type="prismatic">
+	  <xacro:insert_block name="joint_origin"/>
+	  <parent link="${parent}"/>
+	  <child link="left_finger_link"/>
+          <limit effort="10" velocity="1" lower="0" upper = "0.023"/>
+          <dynamics damping="0.005" friction="0.039"/>
+	  <xacro:insert_block name="joint_axis"/>
+	</joint>
+
+	<link name="left_finger_link">
+	  <visual>
+		  <geometry>
+		    <mesh filename="package://wx250s_description/meshes/DAE/finger/gripper_finger.dae"/>
+		  </geometry>
+	  </visual>
+	  <collision>
+		  <geometry>
+		    <mesh filename="package://wx250s_description/meshes/STL/finger/gripper_finger.stl"/>
+		  </geometry>
+	  </collision>
+	  <inertial>
+		<origin xyz="0.0 0.0 0.0"/>
+		<mass value="0.016"/>
+		<inertia ixx="0.000004731" ixy="-0.000000456" ixz="0.0" iyy="-0.000000456" iyz="0.0" izz="0.0000037467"/>
+	  </inertial>
+          <surface>
+            <friction>
+              <ode>
+                <mu1>1.2</mu1>
+                <mu2>1.2</mu2>
+                <kp>1e15</kp>
+                <kd>1e13</kd>
+              </ode>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0.01</restitution_coefficient>
+              <threshold>0</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <max_vel>10</max_vel>
+              </ode>
+            </contact>
+          </surface>
+	</link>
+  </xacro:macro>
+  
+</robot>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot name="drawer" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find wx250s_description)/urdf/drawer_parts/box/base.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/drawer_parts/drawer/drawer.xacro"/>
+  <xacro:include filename="$(find wx250s_description)/urdf/drawer_parts/handle/handle.xacro"/>
+
+  <xacro:property name="PI" value="3.14159274"/>
+
+  <link name="base_footprint"/>
+  <xacro:base parent="base_footprint">
+    <origin xyz="0 0 0" rpy="${PI/2} 0 0" />
+  </xacro:base>
+
+  <xacro:drawer parent="base_link">
+    <origin xyz="0.01 0.0 0.0" rpy="0 0 0" />
+    <axis xyz="1 0 0"/>
+  </xacro:drawer>
+
+  <xacro:handle parent="drawer_link">
+    <origin xyz="0.00425 0.04 0.0" rpy="0 0 0" />
+    <axis xyz="0 0 1"/>
+  </xacro:handle>
+
+</robot>

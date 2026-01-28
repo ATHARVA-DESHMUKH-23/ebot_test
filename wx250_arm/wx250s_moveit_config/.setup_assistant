@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: wx250s_description
+    relative_path: urdf/wx250s.xacro
+  srdf:
+    relative_path: config/wx250s.srdf
+  package_settings:
+    author_name: RobotMania
+    author_email: robotmania@hoge.com
+    generated_timestamp: 1736712933
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

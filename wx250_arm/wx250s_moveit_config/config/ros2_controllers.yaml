@@ -1,0 +1,39 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    wx250s_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    wx250s_gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+wx250s_arm_controller:
+  ros__parameters:
+    joints:
+      - waist
+      - sholder
+      - elbow
+      - forearm_roll
+      - wrist_angle
+      - wrist_rotate
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+wx250s_gripper_controller:
+  ros__parameters:
+    joints:
+      - left_finger_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity

@@ -1,0 +1,10 @@
+# Default initial positions for wx250's ros2_control fake system
+
+initial_positions:
+  elbow: 0
+  forearm_roll: 0
+  left_finger_joint: 0
+  sholder: 0
+  waist: 0
+  wrist_angle: 0
+  wrist_rotate: 0
