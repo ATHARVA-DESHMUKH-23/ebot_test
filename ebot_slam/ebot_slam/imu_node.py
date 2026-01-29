@@ -26,6 +26,10 @@ class ImuNode(Node):
 
         self.pub = self.create_publisher(Imu, '/imu/data_raw', 10)
         self.timer = self.create_timer(0.01, self.publish_imu)
+        self.gyro_bias_z = 0.0
+        self.calibrated = False
+        self.samples = []
+
 
         self.get_logger().info("IMU node started")
 
@@ -46,17 +50,28 @@ class ImuNode(Node):
         ay = self.read_word(ACCEL_XOUT_H + 2) / 16384.0
         az = self.read_word(ACCEL_XOUT_H + 4) / 16384.0
 
-        gx = self.read_word(GYRO_XOUT_H) / 131.0 * math.pi / 180.0
-        gy = self.read_word(GYRO_XOUT_H + 2) / 131.0 * math.pi / 180.0
-        gz = self.read_word(GYRO_XOUT_H + 4) / 131.0 * math.pi / 180.0
+        gx_raw = self.read_word(GYRO_XOUT_H) / 131.0 * math.pi / 180.0
+        gy_raw = self.read_word(GYRO_XOUT_H + 2) / 131.0 * math.pi / 180.0
+        gz_raw = self.read_word(GYRO_XOUT_H + 4) / 131.0 * math.pi / 180.0
+            # ---- Calibration phase ----
+        if not self.calibrated:
+            self.samples.append(gz_raw)
+            if len(self.samples) >= 300:  # ~3 seconds at 100 Hz
+                self.gyro_bias_z = sum(self.samples) / len(self.samples)
+                self.calibrated = True
+                self.get_logger().info(f"Gyro Z bias calibrated: {self.gyro_bias_z}")
+            return
 
+        # ---- Bias removal ----
+        gz = gz_raw - self.gyro_bias_z  
+            
         imu.linear_acceleration.x = ax
         imu.linear_acceleration.y = ay
         imu.linear_acceleration.z = az
 
-        imu.angular_velocity.x = gx
-        imu.angular_velocity.y = gy
-        imu.angular_velocity.z = gz
+        imu.angular_velocity.x = gx_raw
+        imu.angular_velocity.y = gy_raw
+        imu.angular_velocity.z = gz_raw - self.gyro_bias_z
                 
                 # Orientation not provided (we are not computing quaternion)
         imu.orientation_covariance[0] = -1

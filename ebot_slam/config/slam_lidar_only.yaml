@@ -12,8 +12,8 @@ slam_toolbox:
     scan_topic: /scan
     use_imu: false
     imu_topic: /imu/data_raw
-    use_odometry: false
-    provide_odom_frame: true
+    use_odometry: true
+    provide_odom_frame: false
     publish_tf: true
 
     # IMU settings
