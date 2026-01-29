@@ -4,12 +4,17 @@
   <!-- ===================== -->
   <!-- CONTACT SENSOR -->
   <!-- ===================== -->
-  <gazebo reference="ebot_base">
-    <sensor name="collision_sensor" type="contact">
+  <gazebo reference="ebot_base_link">
+    <sensor name="base_contact_sensor" type="contact">
       <contact>
-        <collision>base_link_fixed_joint_lump__ebot_base_collision</collision>
+        <!-- Use link collision, not lump name -->
+        <collision>ebot_base_link_collision</collision>
       </contact>
       <update_rate>5</update_rate>
+
+      <ros>
+        <topic>base_contact</topic>
+      </ros>
     </sensor>
   </gazebo>
 
@@ -18,15 +23,15 @@
   <!-- ===================== -->
   <gazebo reference="FWL">
     <material>Gazebo/Black</material>
-    <kp>1e15</kp>
-    <kd>1e14</kd>
+    <kp>1e6</kp>
+    <kd>1e4</kd>
     <fdir1>0 0 1</fdir1>
   </gazebo>
 
   <gazebo reference="FWR">
     <material>Gazebo/Black</material>
-    <kp>1e15</kp>
-    <kd>1e14</kd>
+    <kp>1e6</kp>
+    <kd>1e4</kd>
     <fdir1>0 0 1</fdir1>
   </gazebo>
 
@@ -37,9 +42,12 @@
     <sensor name="laser" type="gpu_lidar">
       <always_on>true</always_on>
       <visualize>false</visualize>
-      <topic>scan</topic>
       <update_rate>10</update_rate>
-      <gz_frame_id>laser</gz_frame_id>
+
+      <ros>
+        <topic>scan</topic>
+        <frame_id>laser</frame_id>
+      </ros>
 
       <lidar>
         <scan>
@@ -62,11 +70,23 @@
   <!-- ===================== -->
   <xacro:macro name="ultrasonic_sensor" params="name">
     <gazebo reference="${name}">
-      <sensor name="${name}" type="gpu_lidar">
+      <sensor name="${name}" type="ray">
         <always_on>true</always_on>
         <update_rate>5</update_rate>
-        <topic>${name}/data</topic>
+
+        <ros>
+          <topic>${name}/range</topic>
+          <frame_id>${name}</frame_id>
+        </ros>
+
         <ray>
+          <scan>
+            <horizontal>
+              <samples>1</samples>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </horizontal>
+          </scan>
           <range>
             <min>0.03</min>
             <max>4.0</max>

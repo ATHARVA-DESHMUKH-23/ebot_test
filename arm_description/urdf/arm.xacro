@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-<xacro:include filename="$(find arm_description)/urdf/simple_gripper.xacro"/>
+<!-- <xacro:include filename="$(find arm_description)/urdf/simple_gripper.xacro"/> -->
 
 
   <xacro:macro name="ebot_arm">
@@ -268,7 +268,7 @@
     <!-- ===================== -->
     <!-- SIMPLE GRIPPER -->
     <!-- ===================== -->
-    <xacro:simple_gripper parent_link="tool0"/>
+    <!-- <xacro:simple_gripper parent_link="tool0"/> -->
 
 
     <!-- ee_link : physical tool -->
@@ -298,8 +298,8 @@
 
   <ros2_control name="ArmSystem" type="system">
   <hardware>
-    <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
-    <plugin>mock_components/GenericSystem</plugin>
+    <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    <!-- <plugin>mock_components/GenericSystem</plugin> -->
     <param name="initial_positions">0 0 0 0</param>
   </hardware>
 
