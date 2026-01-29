@@ -153,14 +153,14 @@ class EEVelocityAllocator(Node):
         # ---- Alignment check ----
         r_align_start = self.r_max - self.align_band
 
-        # if self.switch:
+        if self.switch:
 
-        if r > r_align_start:
-            done = self.align_base_and_arm()
-            if not done:
-                return  # freeze other motion while aligning
-                # else:
-                #     self.switch = False
+            if r > r_align_start:
+                done = self.align_base_and_arm()
+                if not done:
+                    return  # freeze other motion while aligning
+                else:
+                    self.switch = False
 
         scale = self.compute_scale(r)
 

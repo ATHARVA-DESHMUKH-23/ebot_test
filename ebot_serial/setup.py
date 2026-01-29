@@ -34,7 +34,9 @@ setup(
             'ee_plotter = ebot_serial.ee_ploter:main',
             'ee_velocity_estimator = ebot_serial.ee_velocity_estimator:main',
             'ee_velocity_allocator = ebot_serial.ee_velocity_allocator:main',
-
+            'cartesian_servo_kdl = ebot_serial.cartesian_servo_kdl:main',
+            'cartesian_point = ebot_serial.cartesian_point:main',
+            'kdl_fk_test = ebot_serial.kdl_fk:main',
         ],
     },
 )
