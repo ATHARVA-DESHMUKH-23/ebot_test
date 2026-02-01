@@ -1,0 +1,17 @@
+teleop_twist_joy_node:
+  ros__parameters:
+
+    enable_button: 5        # RB
+    enable_turbo_button: 4  # LB
+
+    require_enable_button: false
+
+    axis_linear:
+      x: 1                 # Left stick vertical
+    scale_linear:
+      x: 0.8
+
+    axis_angular:
+      yaw: 3               # Right stick horizontal
+    scale_angular:
+      yaw: 1.5
