@@ -8,8 +8,8 @@ import math
 
 # ---------------- PARAMETERS ----------------
 CONTROL_HZ = 20.0
-POS_TOLERANCE = 0.02
-YAW_TOLERANCE = math.radians(5)
+POS_TOLERANCE = 0.4
+YAW_TOLERANCE = math.radians(15)
 
 KP_LINEAR = 0.4
 KP_ANGULAR = 1.5

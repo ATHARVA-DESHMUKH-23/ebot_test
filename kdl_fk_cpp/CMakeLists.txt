@@ -20,6 +20,15 @@ find_package(kdl_parser REQUIRED)
 find_package(orocos_kdl REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(trajectory_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(ebot_navigation_interfaces REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(visualization_msgs REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(control_msgs REQUIRED)
 
 
 # =========================
@@ -58,6 +67,23 @@ ament_target_dependencies(
   tf2
 )
 
+add_executable(pick_fsm_node src/pick_fsm_node.cpp)
+
+ament_target_dependencies(pick_fsm_node
+  rclcpp
+  rclcpp_action
+  geometry_msgs
+  nav_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  std_msgs
+  ebot_navigation_interfaces
+  visualization_msgs
+  control_msgs
+  trajectory_msgs
+)
+
 # =========================
 # Install
 # =========================
@@ -65,6 +91,7 @@ install(
   TARGETS
     kdl_fk_node
     kdl_cartesian_point_controller
+    pick_fsm_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

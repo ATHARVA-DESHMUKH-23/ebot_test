@@ -98,7 +98,7 @@ def generate_launch_description():
         ros2_control_node,
         joint_state_broadcaster_spawner,
         arm_controller_spawner,
-        cartesian_servo,
+        # cartesian_servo,
         # ee_velocity_allocator,
         cmdvel_to_arduino,
         fake_hw_interface,
