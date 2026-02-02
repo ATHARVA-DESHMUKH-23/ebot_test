@@ -12,6 +12,22 @@ PWR_MGMT_1 = 0x6B
 GYRO_XOUT_H = 0x43
 ACCEL_XOUT_H = 0x3B
 
+def quaternion_from_euler(roll, pitch, yaw):
+    cr = math.cos(roll * 0.5)
+    sr = math.sin(roll * 0.5)
+    cp = math.cos(pitch * 0.5)
+    sp = math.sin(pitch * 0.5)
+    cy = math.cos(yaw * 0.5)
+    sy = math.sin(yaw * 0.5)
+
+    qw = cr * cp * cy + sr * sp * sy
+    qx = sr * cp * cy - cr * sp * sy
+    qy = cr * sp * cy + sr * cp * sy
+    qz = cr * cp * sy - sr * sp * cy
+
+    return qx, qy, qz, qw
+
+
 class ImuNode(Node):
     def __init__(self):
         super().__init__('imu_node')
@@ -46,43 +62,57 @@ class ImuNode(Node):
         imu.header.stamp = self.get_clock().now().to_msg()
         imu.header.frame_id = "imu_link"
 
-        ax = self.read_word(ACCEL_XOUT_H) / 16384.0
-        ay = self.read_word(ACCEL_XOUT_H + 2) / 16384.0
-        az = self.read_word(ACCEL_XOUT_H + 4) / 16384.0
+        # Raw sensor axes
+        ax_raw = self.read_word(ACCEL_XOUT_H) / 16384.0
+        ay_raw = self.read_word(ACCEL_XOUT_H + 2) / 16384.0
+        az_raw = self.read_word(ACCEL_XOUT_H + 4) / 16384.0
+
+        # Remap axes so gravity points to -Z
+        ax = ay_raw
+        ay = az_raw
+        az = -ax_raw
 
         gx_raw = self.read_word(GYRO_XOUT_H) / 131.0 * math.pi / 180.0
         gy_raw = self.read_word(GYRO_XOUT_H + 2) / 131.0 * math.pi / 180.0
         gz_raw = self.read_word(GYRO_XOUT_H + 4) / 131.0 * math.pi / 180.0
-            # ---- Calibration phase ----
+
         if not self.calibrated:
             self.samples.append(gz_raw)
-            if len(self.samples) >= 300:  # ~3 seconds at 100 Hz
+            if len(self.samples) >= 300:
                 self.gyro_bias_z = sum(self.samples) / len(self.samples)
                 self.calibrated = True
                 self.get_logger().info(f"Gyro Z bias calibrated: {self.gyro_bias_z}")
             return
 
-        # ---- Bias removal ----
-        gz = gz_raw - self.gyro_bias_z  
-            
-        imu.linear_acceleration.x = ax
-        imu.linear_acceleration.y = ay
-        imu.linear_acceleration.z = az
+        gz = gz_raw - self.gyro_bias_z
+
+        imu.linear_acceleration.x = ax * 9.80665
+        imu.linear_acceleration.y = ay * 9.80665
+        imu.linear_acceleration.z = az * 9.80665
 
         imu.angular_velocity.x = gx_raw
         imu.angular_velocity.y = gy_raw
-        imu.angular_velocity.z = gz_raw - self.gyro_bias_z
-                
-                # Orientation not provided (we are not computing quaternion)
-        imu.orientation_covariance[0] = -1
+        imu.angular_velocity.z = gz
 
-        # Gyro covariance (tells SLAM gyro is usable)
+        # Orientation from gravity (roll & pitch only)
+        roll  = math.atan2(ay, az)
+        pitch = math.atan2(-ax, math.sqrt(ay*ay + az*az))
+        yaw = 0.0
+
+        qx, qy, qz, qw = quaternion_from_euler(roll, pitch, yaw)
+
+        imu.orientation.x = qx
+        imu.orientation.y = qy
+        imu.orientation.z = qz
+        imu.orientation.w = qw
+
+        imu.orientation_covariance[0] = 0.01
         imu.angular_velocity_covariance[0] = 0.02
-
-        # Accel covariance
         imu.linear_acceleration_covariance[0] = 0.04
 
         self.pub.publish(imu)
+
+
 
 def main():
     rclpy.init()
