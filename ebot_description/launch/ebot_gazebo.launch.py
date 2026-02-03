@@ -86,11 +86,11 @@ def generate_launch_description():
         arguments=[
             'diff_drive_controller',
             '--controller-ros-args',
-            '--remap',
-            '/diff_drive_controller/cmd_vel:=/cmd_vel'
+            '--ros-args --remap /diff_drive_controller/cmd_vel:=/cmd_vel'
         ],
         output='screen'
     )
+
 
     # -----------------------------
     # Robot State Publisher (DELAYED)

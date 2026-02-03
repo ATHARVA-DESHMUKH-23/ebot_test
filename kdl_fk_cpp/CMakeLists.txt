@@ -84,6 +84,19 @@ ament_target_dependencies(pick_fsm_node
   trajectory_msgs
 )
 
+add_executable(kdl_cartesian_servo src/kdl_cartesian_servo.cpp)
+
+ament_target_dependencies(kdl_cartesian_servo
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  trajectory_msgs 
+  urdf
+  kdl_parser
+  orocos_kdl
+  tf2
+)
+
 # =========================
 # Install
 # =========================
@@ -92,6 +105,7 @@ install(
     kdl_fk_node
     kdl_cartesian_point_controller
     pick_fsm_node
+    kdl_cartesian_servo
   DESTINATION lib/${PROJECT_NAME}
 )
 

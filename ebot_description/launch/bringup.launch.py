@@ -61,6 +61,19 @@ def generate_launch_description():
     )
 
     # -----------------------------
+    # rosbridge websocket
+    # -----------------------------
+    rosbridge_websocket = Node(
+        package='rosbridge_server',
+        executable='rosbridge_websocket',
+        name='rosbridge_websocket',
+        output='screen',
+        parameters=[{
+            'delay_between_messages': 0.0
+        }]
+    )
+
+    # -----------------------------
     # ebot_serial nodes
     # -----------------------------
     cartesian_servo = Node(
@@ -93,14 +106,58 @@ def generate_launch_description():
         output='screen'
     )
 
+    # -----------------------------
+    # ebot_navigation nodes
+    # -----------------------------
+    odom_controller = Node(
+        package='ebot_navigation',
+        executable='odom_controller',
+        output='screen'
+    )
+
+    odom_nav_action_server = Node(
+        package='ebot_navigation',
+        executable='odom_nav_action_server',
+        output='screen'
+    )
+
+    # -----------------------------
+    # KDL / FSM nodes
+    # -----------------------------
+    kdl_cartesian_point_controller = Node(
+        package='kdl_fk_cpp',
+        executable='kdl_cartesian_point_controller',
+        output='screen'
+    )
+
+    pick_fsm_node = Node(
+        package='kdl_fk_cpp',
+        executable='pick_fsm_node',
+        output='screen'
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         ros2_control_node,
         joint_state_broadcaster_spawner,
         arm_controller_spawner,
+
+        # rosbridge
+        rosbridge_websocket,
+
+        # -----------------------------
+        # Uncomment as needed
+        # -----------------------------
         # cartesian_servo,
         # ee_velocity_allocator,
+
         cmdvel_to_arduino,
         fake_hw_interface,
-        encoder_odometry
+        encoder_odometry,
+
+        odom_controller,
+        odom_nav_action_server,
+
+        kdl_cartesian_point_controller,
+        pick_fsm_node,
     ])

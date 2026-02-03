@@ -100,6 +100,7 @@ class EEVelocityAllocator(Node):
         if r <= self.r_soft_start:
             return 1.0
         elif r >= self.r_max:
+            self.switch = True
             return 0.0
         else:
             return (self.r_max - r) / (self.r_max - self.r_soft_start)
@@ -179,8 +180,8 @@ class EEVelocityAllocator(Node):
         ee_arm.linear.z = scale * vz
         ee_arm.angular.z = scale * wz
 
-        base.linear.y = (1.0 - scale) * vx
-        base.linear.x = ((1.0 - scale) * vz) *10
+        base.linear.y = (1.0 - scale) * vy
+        base.linear.x = ((1.0 - scale) * vx) *10
         base.angular.z = (1.0 - scale) * wz
 
         # ---- Publish ----
