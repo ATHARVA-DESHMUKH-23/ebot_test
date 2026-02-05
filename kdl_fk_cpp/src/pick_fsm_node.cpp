@@ -154,9 +154,21 @@ private:
     {
       case State::IDLE:
         if (goal_received_ && odom_ok_) {
-          state_ = State::ARM_TO_START;
+
+          double dist = baseToGoalDist();
+
+          if (dist > 0.4) {
+            RCLCPP_INFO(get_logger(),
+              "📏 Base far from object (%.2f m) → moving arm to SAFE pose", dist);
+            state_ = State::ARM_TO_START;
+          } else {
+            RCLCPP_INFO(get_logger(),
+              "📏 Base close to object (%.2f m) → skipping SAFE pose", dist);
+            state_ = State::MOVE_BASE;
+          }
         }
         break;
+
 
       case State::ARM_TO_START:
         if (!arm_init_sent_) sendArmToStartPose();
@@ -187,9 +199,11 @@ private:
 
 
       case State::MOVE_ARM:
-        sendArmCartesian();
-        state_ = State::WAIT_ARM;
+        if (sendArmCartesian()) {
+          state_ = State::WAIT_ARM;
+        }
         break;
+
 
       case State::WAIT_ARM:
         if (armReached()) {
@@ -240,6 +254,14 @@ private:
     return err < arm_tol_;
   }
 
+  double baseToGoalDist() const
+  {
+    return std::hypot(
+      object_odom_.point.x - robot_x_,
+      object_odom_.point.y - robot_y_);
+  }
+
+
   /* ================= Base ================= */
 
   void sendBaseGoal()
@@ -281,12 +303,46 @@ private:
 
   /* ================= Arm Cartesian ================= */
 
-  void sendArmCartesian()
-  {
-    auto obj_arm =
-      tf_buffer_.transform(object_odom_, "arm_base_link");
+  // void sendArmCartesian()
+  // {
+  //   auto obj_arm =
+  //     tf_buffer_.transform(object_odom_, "arm_base_link");
 
-    geometry_msgs::msg::Point p = obj_arm.point;
+  //   geometry_msgs::msg::Point p = obj_arm.point;
+  //   arm_target_pub_->publish(p);
+
+  //   std_msgs::msg::Float64 pitch;
+  //   pitch.data = 1.57;
+  //   arm_pitch_pub_->publish(pitch);
+
+  //   last_arm_ = {p.x, p.y, p.z};
+  // }
+
+  bool sendArmCartesian()
+  {
+    geometry_msgs::msg::PointStamped obj_arm;
+
+    try {
+      obj_arm = tf_buffer_.transform(object_odom_, "arm_base_link");
+    } catch (...) {
+      reset();
+      return false;
+    }
+
+    const auto & p = obj_arm.point;
+
+    if (std::abs(p.x) > 0.5 ||
+        std::abs(p.y) > 0.5 ||
+        std::abs(p.z) > 0.6)
+    {
+      RCLCPP_ERROR(get_logger(),
+        "🚫 Arm target out of bounds: x=%.2f y=%.2f z=%.2f → RESET",
+        p.x, p.y, p.z);
+
+      reset();
+      return false;
+    }
+
     arm_target_pub_->publish(p);
 
     std_msgs::msg::Float64 pitch;
@@ -294,7 +350,9 @@ private:
     arm_pitch_pub_->publish(pitch);
 
     last_arm_ = {p.x, p.y, p.z};
+    return true;
   }
+
 
   bool armReached()
   {

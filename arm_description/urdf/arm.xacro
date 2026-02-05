@@ -286,34 +286,38 @@
 
   <ros2_control name="ArmSystem" type="system">
   <hardware>
+    <plugin>ebot_arm_hardware/ArmHardware</plugin>
+    <param name="port">/dev/ttyACM1</param>
+    <param name="baudrate">115200</param>
+
     <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
-    <plugin>mock_components/GenericSystem</plugin>
-    <param name="initial_positions">0 0 0 0</param>
+    <!-- <plugin>mock_components/GenericSystem</plugin> -->
+    <!-- <param name="initial_positions">0 0 0 0</param> -->
   </hardware>
 
 
     <joint name="base_rotation_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <state_interface name="velocity"/>
+      <!-- <state_interface name="velocity"/> -->
     </joint>
 
     <joint name="shoulder_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <state_interface name="velocity"/>
+      <!-- <state_interface name="velocity"/> -->
     </joint>
 
     <joint name="elbow_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <state_interface name="velocity"/>
+      <!-- <state_interface name="velocity"/> -->
     </joint>
 
     <joint name="wrist_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <state_interface name="velocity"/>
+      <!-- <state_interface name="velocity"/> -->
     </joint>
 
     <!-- <joint name="wrist_roll_joint">
@@ -337,7 +341,7 @@
       <state_interface name="position"/>
     </joint> -->
   
-    <joint name="FWRJ">
+    <!-- <joint name="FWRJ">
       <command_interface name="velocity"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -347,7 +351,7 @@
       <command_interface name="velocity"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
-    </joint>
+    </joint> -->
 
   </ros2_control>
 

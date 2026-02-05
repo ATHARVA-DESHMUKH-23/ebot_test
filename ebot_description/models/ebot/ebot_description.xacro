@@ -111,7 +111,10 @@
     <origin xyz="0 -0.20 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWR"/>
-    <axis xyz="1 0 0"/>
+    <axis xyz="0 1 0"/>
+
+    <limit effort="10.0" velocity="20.0"/>
+    <dynamics damping="0.1" friction="0.0"/>
   </joint>
 
   <!-- Front Left -->
@@ -140,14 +143,17 @@
     <origin xyz="0 0.20 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWL"/>
-    <axis xyz="1 0 0"/>
+    <axis xyz="0 1 0"/>
+
+    <limit effort="10.0" velocity="20.0"/>
+    <dynamics damping="0.1" friction="0.0"/>
   </joint>
 
 
   <!-- ===================== -->
   <!-- TRANSMISSIONS -->
   <!-- ===================== -->
-
+<!-- 
   <transmission name="FWR_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="FWRJ">
@@ -166,7 +172,7 @@
     <actuator name="FWL_motor">
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> -->
 
   <!-- ===================== -->
   <!-- OMNI CASTERS (SWIVEL + ROLL) -->

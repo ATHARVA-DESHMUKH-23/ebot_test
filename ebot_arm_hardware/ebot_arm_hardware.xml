@@ -1,0 +1,10 @@
+<library path="ebot_arm_hardware">
+  <class
+    name="ebot_arm_hardware/ArmHardware"
+    type="ebot_arm_hardware::ArmHardware"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Arm-only ros2_control hardware interface
+    </description>
+  </class>
+</library>

@@ -16,18 +16,14 @@
   <!-- ===================== -->
   <!-- WHEEL CONTACT TUNING -->
   <!-- ===================== -->
-  <gazebo reference="FWL">
-    <material>Gazebo/Black</material>
-    <kp>1e15</kp>
-    <kd>1e14</kd>
-    <fdir1>0 0 1</fdir1>
+  <gazebo reference="FWR">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
   </gazebo>
 
-  <gazebo reference="FWR">
-    <material>Gazebo/Black</material>
-    <kp>1e15</kp>
-    <kd>1e14</kd>
-    <fdir1>0 0 1</fdir1>
+  <gazebo reference="FWL">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
   </gazebo>
 
   <!-- ===================== -->

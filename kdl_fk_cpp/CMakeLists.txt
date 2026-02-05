@@ -97,6 +97,24 @@ ament_target_dependencies(kdl_cartesian_servo
   tf2
 )
 
+add_executable(kdl_singularity_map src/kdl_singularity_map.cpp)
+
+ament_target_dependencies(kdl_singularity_map
+  rclcpp
+  visualization_msgs
+  urdf
+  kdl_parser
+  orocos_kdl
+)
+
+add_executable(point_integration src/point_integration)
+
+ament_target_dependencies(point_integration
+  rclcpp
+  geometry_msgs
+  visualization_msgs
+)
+
 # =========================
 # Install
 # =========================
@@ -106,6 +124,8 @@ install(
     kdl_cartesian_point_controller
     pick_fsm_node
     kdl_cartesian_servo
+    kdl_singularity_map
+    point_integration
   DESTINATION lib/${PROJECT_NAME}
 )
 
