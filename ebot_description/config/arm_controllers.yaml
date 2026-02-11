@@ -24,8 +24,8 @@ arm_controller:
       - shoulder_joint
       - elbow_joint
       - wrist_joint
-      # - wrist_roll_joint
-      # - wrist_yaw_joint
+      - wrist_roll_joint
+      - wrist_yaw_joint
 
 
     # The controller will expect position commands as input for each of these joints.
@@ -50,16 +50,16 @@ arm_controller:
     # Allow non-zero velocity at the end of the trajectory
     allow_nonzero_velocity_at_trajectory_end: false
 
-# gripper_controller:
-#   ros__parameters:
-#     joints:
-#       - right_finger_joint
+gripper_controller:
+  ros__parameters:
+    joints:
+      - right_finger_joint
 
-#     command_interfaces:
-#       - position
+    command_interfaces:
+      - position
 
-#     state_interfaces:
-#       - position
+    state_interfaces:
+      - position
 
 
 diff_drive_controller:
@@ -77,33 +77,3 @@ diff_drive_controller:
 
     cmd_vel_timeout: 0.5
     use_stamped_vel: true
-
-# controller_manager:
-#   ros__parameters:
-#     update_rate: 100
-
-#     arm_controller:
-#       type: joint_trajectory_controller/JointTrajectoryController
-
-#     joint_state_broadcaster:
-#       type: joint_state_broadcaster/JointStateBroadcaster
-    
-    
-
-# arm_controller:
-#   ros__parameters:
-#     joints:
-#       - base_rotation_joint
-#       - shoulder_joint
-#       - elbow_joint
-#       - wrist_joint
-#       - wrist_roll_joint
-
-#     command_interfaces:
-#       - position
-
-#     state_interfaces:
-#       - position
-#       - velocity
-
-#     allow_partial_joints_goal: false

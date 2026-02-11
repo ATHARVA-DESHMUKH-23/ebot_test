@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-<!-- <xacro:include filename="$(find arm_description)/urdf/simple_gripper.xacro"/> -->
+<xacro:include filename="$(find arm_description)/urdf/simple_gripper.xacro"/>
 
   <xacro:macro name="ebot_arm">
 
@@ -18,15 +18,15 @@
   <xacro:property name="l2" value="0.30"/>
   <xacro:property name="l3" value="0.25"/>
   <xacro:property name="l4" value="0.05"/>
-  <!-- <xacro:property name="l5" value="0.05"/>
-  <xacro:property name="l6" value="0.05"/> -->
+  <xacro:property name="l5" value="0.05"/>
+  <xacro:property name="l6" value="0.05"/>
 
   <xacro:property name="l1_half" value="0.05"/>
   <xacro:property name="l2_half" value="0.15"/>
   <xacro:property name="l3_half" value="0.125"/>
   <xacro:property name="l4_half" value="0.025"/>
-  <!-- <xacro:property name="l5_half" value="0.025"/>
-  <xacro:property name="l6_half" value="0.025"/> -->
+  <xacro:property name="l5_half" value="0.025"/>
+  <xacro:property name="l6_half" value="0.025"/>
 
     <!-- ===================== -->
   <!-- MATERIALS -->
@@ -34,9 +34,9 @@
   <material name="wheel_black">
     <color rgba="0.02 0.02 0.02 1.0"/>
   </material>
-  <!-- <material name="arm_blue">
+  <material name="arm_blue">
     <color rgba="0.0 0.0 0.8 0.7"/>
-  </material> -->
+  </material>
 
 
   <!-- ===================== -->
@@ -112,7 +112,7 @@
   <joint name="shoulder_joint" type="revolute">
     <parent link="arm_link_1"/>
     <child link="arm_link_2"/>
-    <origin xyz="0 0 ${l1}"/>
+    <origin xyz="0 0.06 ${l1}"/>
     <axis xyz="0 1 0"/>
     <limit lower="-1.57" upper="1.57" effort="36" velocity="1.5"/>
   </joint>
@@ -142,7 +142,7 @@
   <joint name="elbow_joint" type="revolute">
     <parent link="arm_link_2"/>
     <child link="arm_link_3"/>
-    <origin xyz="0 0 ${l2}"/>
+    <origin xyz="0 -0.06 ${l2}"/>
     <axis xyz="0 1 0"/>
     <limit lower="0.00" upper="3.1" effort="15" velocity="1.5"/>
   </joint>
@@ -172,7 +172,7 @@
   <joint name="wrist_joint" type="revolute">
     <parent link="arm_link_3"/>
     <child link="arm_link_4"/>
-    <origin xyz="0 0 ${l3}"/>
+    <origin xyz="0 0.05 ${l3}"/>
     <axis xyz="0 1 0"/>
     <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
   </joint>
@@ -180,7 +180,7 @@
   <!-- ===================== -->
   <!-- LINK 5 -->
   <!-- ===================== -->
-  <!-- <link name="arm_link_5">
+  <link name="arm_link_5">
     <inertial>
       <origin xyz="0 0 ${l5_half}"/>
       <xacro:cyl_inertia m="1.0" r="0.025" l="${l5}"/>
@@ -199,10 +199,10 @@
         <cylinder length="${l5}" radius="0.025"/>
       </geometry>
     </collision>
-  </link> -->
+  </link>
 
   <!-- Wrist roll joint (PERPENDICULAR) -->
-  <!-- <joint name="wrist_roll_joint" type="revolute">
+  <joint name="wrist_roll_joint" type="revolute">
     <parent link="arm_link_4"/>
     <child link="arm_link_5"/>
 
@@ -211,12 +211,12 @@
     <axis xyz="1 0 0"/>
 
     <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
-  </joint> -->
+  </joint>
 
  <!-- ===================== -->
   <!-- LINK 6 -->
   <!-- ===================== -->
-  <!-- <link name="arm_link_6">
+  <link name="arm_link_6">
     <inertial>
       <origin xyz="0 0 ${l6_half}"/>
       <xacro:cyl_inertia m="1.0" r="0.025" l="${l6}"/>
@@ -247,7 +247,7 @@
     <axis xyz="0 0 1"/>
 
     <limit lower="-3.14" upper="3.14" effort="10" velocity="2.0"/>
-  </joint> -->
+  </joint>
 
   <!-- ===================== -->
   <!-- END EFFECTOR -->
@@ -255,10 +255,10 @@
   <link name="tool0"/>
 
     <joint name="wrist_to_tool0" type="fixed">
-      <parent link="arm_link_4"/>
+      <parent link="arm_link_6"/>
       <child link="tool0"/>
       <!-- adjust xyz if needed -->
-      <origin xyz="0 0 ${l4}" rpy="0 0 0"/>
+      <origin xyz="0 0 ${l6}" rpy="0 0 0"/>
     </joint>
 
     <!-- ee_link : physical tool -->
@@ -286,7 +286,7 @@
     <!-- ===================== -->
     <!-- SIMPLE GRIPPER -->
     <!-- ===================== -->
-    <!-- <xacro:simple_gripper parent_link="tool0"/> -->
+    <xacro:simple_gripper parent_link="tool0"/>
   
 
   <ros2_control name="ArmSystem" type="system">
@@ -295,8 +295,8 @@
     <param name="port">/dev/ttyACM1</param>
     <param name="baudrate">115200</param> -->
 
-    <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-    <!-- <plugin>mock_components/GenericSystem</plugin> -->
+    <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
+    <plugin>mock_components/GenericSystem</plugin>
     <!-- <param name="initial_positions">0 0 0 0</param> -->
   </hardware>
 
@@ -325,13 +325,13 @@
       <state_interface name="velocity"/>
     </joint>
 
-    <!-- <joint name="wrist_roll_joint">
+    <joint name="wrist_roll_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
-    </joint> -->
+    </joint>
 
-    <!-- <joint name="wrist_yaw_joint">
+    <joint name="wrist_yaw_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -344,7 +344,7 @@
 
     <joint name="left_finger_joint">
       <state_interface name="position"/>
-    </joint> -->
+    </joint>
   
     <joint name="FWRJ">
       <command_interface name="velocity"/>

@@ -1,7 +1,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
-#include <geometry_msgs/msg/point.hpp>
-#include <std_msgs/msg/float64.hpp>
+#include <geometry_msgs/msg/pose.hpp>
 #include <trajectory_msgs/msg/joint_trajectory.hpp>
 #include <trajectory_msgs/msg/joint_trajectory_point.hpp>
 
@@ -16,13 +15,12 @@
 
 using namespace std::chrono_literals;
 
-class KDLCartesianPointController : public rclcpp::Node
+class KDLCartesianController : public rclcpp::Node
 {
 public:
-  KDLCartesianPointController()
-  : Node("kdl_cartesian_point_controller")
+  KDLCartesianController()
+  : Node("kdl_cartesian_controller")
   {
-    /* -------- robot_description -------- */
     param_client_ =
       std::make_shared<rclcpp::SyncParametersClient>(
         this, "robot_state_publisher");
@@ -46,67 +44,66 @@ public:
 
     RCLCPP_INFO(get_logger(), "KDL ready | joints=%d", chain_.getNrOfJoints());
 
-    /* -------- ROS interfaces -------- */
     joint_sub_ = create_subscription<sensor_msgs::msg::JointState>(
       "/joint_states", 10,
-      std::bind(&KDLCartesianPointController::jointCB, this, std::placeholders::_1));
+      std::bind(&KDLCartesianController::jointCB, this, std::placeholders::_1));
 
-    target_sub_ = create_subscription<geometry_msgs::msg::Point>(
+    pose_sub_ = create_subscription<geometry_msgs::msg::Pose>(
       "/arm/cartesian_target", 10,
-      std::bind(&KDLCartesianPointController::targetCB, this, std::placeholders::_1));
-
-    pitch_sub_ = create_subscription<std_msgs::msg::Float64>(
-      "/arm/cartesian_pitch", 10,
-      std::bind(&KDLCartesianPointController::pitchCB, this, std::placeholders::_1));
+      std::bind(&KDLCartesianController::targetCB, this, std::placeholders::_1));
 
     traj_pub_ = create_publisher<trajectory_msgs::msg::JointTrajectory>(
       "/arm_controller/joint_trajectory", 10);
   }
 
 private:
-  /* ---------------- callbacks ---------------- */
 
   void jointCB(const sensor_msgs::msg::JointState::SharedPtr msg)
   {
     joint_names_ = msg->name;
     joint_pos_   = msg->position;
     joints_ok_   = true;
+
+    RCLCPP_INFO_ONCE(get_logger(),
+    "✅ Received joint_states (%ld joints)",
+    joint_pos_.size());
   }
 
-  void pitchCB(const std_msgs::msg::Float64::SharedPtr msg)
+  void targetCB(const geometry_msgs::msg::Pose::SharedPtr msg)
   {
-    target_pitch_ = msg->data;
-    pitch_ok_ = true;
-  }
-
-  void targetCB(const geometry_msgs::msg::Point::SharedPtr msg)
-  {
-    if (!joints_ok_ || !pitch_ok_) {
-      RCLCPP_WARN(get_logger(), "Waiting for joint state / pitch");
+    if (!joints_ok_ || executing_)
+      return;
+  
+    if (!joints_ok_) {
+      RCLCPP_WARN(get_logger(), "❌ No joint_states yet");
       return;
     }
-
     if (executing_) {
-      RCLCPP_WARN(get_logger(), "IK already executing");
+      RCLCPP_WARN(get_logger(), "⚠ IK already executing");
       return;
     }
-
     executing_ = true;
-    target_ << msg->x, msg->y, msg->z;
 
-    RCLCPP_INFO(get_logger(),
-      "🎯 Cartesian target received: [%.3f %.3f %.3f]",
-      target_.x(), target_.y(), target_.z());
+    KDL::Vector p(msg->position.x,
+                  msg->position.y,
+                  msg->position.z);
 
-    solveIKAndSendOnce();
+    KDL::Rotation R =
+      KDL::Rotation::Quaternion(
+        msg->orientation.x,
+        msg->orientation.y,
+        msg->orientation.z,
+        msg->orientation.w);
 
+    target_frame_ = KDL::Frame(R, p);
+
+    solveIK();
     executing_ = false;
   }
 
-  /* ---------------- IK solver (ONE-SHOT) ---------------- */
-
-  void solveIKAndSendOnce()
+  void solveIK()
   {
+    RCLCPP_INFO(get_logger(), "🚀 Starting IK solve");
     KDL::JntArray q(chain_.getNrOfJoints());
     unsigned idx = 0;
 
@@ -124,80 +121,111 @@ private:
         : 0.0;
     }
 
-    /* ---- iterative IK ---- */
-    for (int iter = 0; iter < 200; iter++)
+    for (int iter = 0; iter < 100000; iter++)
     {
-      KDL::Frame ee;
-      fk_solver_->JntToCart(q, ee);
+      KDL::Frame current;
+      fk_solver_->JntToCart(q, current);
 
-      double r, pitch_cur, y;
-      ee.M.GetRPY(r, pitch_cur, y);
+      double cr, cp, cy;
+      current.M.GetRPY(cr, cp, cy);
 
-      Eigen::Vector4d err;
-      err <<
-        target_.x() - ee.p.x(),
-        target_.y() - ee.p.y(),
-        target_.z() - ee.p.z(),
-        target_pitch_ - pitch_cur;
+      double tr, tp, ty;
+      target_frame_.M.GetRPY(tr, tp, ty);
 
-      if (err.head<3>().norm() < 0.005)
-        break;
+      RCLCPP_INFO(get_logger(),
+        "Current RPY: %.3f %.3f %.3f | Target RPY: %.3f %.3f %.3f",
+        cr, cp, cy, tr, tp, ty);
+
+
+      // --- Position error ---
+      KDL::Vector dp = target_frame_.p - current.p;
+
+      // --- Orientation error (axis-angle) ---
+      KDL::Rotation R_err =
+         target_frame_.M * current.M.Inverse();
+
+      double ex = 0.5 * (R_err(2,1) - R_err(1,2));
+      double ey = 0.5 * (R_err(0,2) - R_err(2,0));
+      double ez = 0.5 * (R_err(1,0) - R_err(0,1));
+
+      KDL::Vector dw(ex, ey, ez);
+
+      Eigen::VectorXd err(6);
+      err << dp.x(), dp.y(), dp.z(),
+            dw.x(), dw.y(), dw.z();
+
+      double rot_error_norm = dw.Norm();
+
+      if (dp.Norm() < 0.002 && rot_error_norm < 0.005)
+          break;
+
 
       KDL::Jacobian J_kdl(chain_.getNrOfJoints());
       jac_solver_->JntToJac(q, J_kdl);
 
-      Eigen::MatrixXd J(4, chain_.getNrOfJoints());
-      for (unsigned c = 0; c < chain_.getNrOfJoints(); c++)
-      {
-        J(0,c) = J_kdl(0,c);
-        J(1,c) = J_kdl(1,c);
-        J(2,c) = J_kdl(2,c);
-        J(3,c) = J_kdl(4,c);
-      }
+      Eigen::MatrixXd J(6, chain_.getNrOfJoints());
+      for (unsigned r = 0; r < 6; r++)
+        for (unsigned c = 0; c < chain_.getNrOfJoints(); c++)
+          J(r,c) = J_kdl(r,c);
 
-      Eigen::VectorXd qdot =
-        J.transpose() *
-        (J*J.transpose() +
-         0.0004 * Eigen::Matrix4d::Identity()).inverse()
-        * err;
+      double lambda = 0.01;
+
+      Eigen::MatrixXd J_pinv =
+          J.transpose() *
+          (J * J.transpose()
+           + lambda * Eigen::MatrixXd::Identity(6,6))
+          .inverse();
+
+      Eigen::VectorXd qdot = J_pinv * err;
 
       for (unsigned i = 0; i < q.rows(); i++)
-        q(i) += qdot(i) * 0.02;
+        q(i) += qdot(i) * 0.05;
+      
+      if (iter % 50 == 0)
+      {
+        RCLCPP_INFO(get_logger(),
+          "Iter %d | Pos error: %.4f | Rot error: %.4f",
+          iter,
+          dp.Norm(),
+          rot_error_norm);
+      }
+
+
     }
+    RCLCPP_INFO(get_logger(), "✅ IK finished");
 
     publishTrajectory(q);
   }
 
-  /* ---------------- publish ONCE ---------------- */
-
   void publishTrajectory(const KDL::JntArray &q)
   {
     trajectory_msgs::msg::JointTrajectory traj;
-    traj.joint_names = {
-      "base_rotation_joint",
-      "shoulder_joint",
-      "elbow_joint",
-      "wrist_joint"
-    };
+
+    
+    for (unsigned i = 0; i < chain_.getNrOfSegments(); ++i)
+    {
+      const auto & joint = chain_.getSegment(i).getJoint();
+      if (joint.getType() != KDL::Joint::None)
+        traj.joint_names.push_back(joint.getName());
+    }
 
     trajectory_msgs::msg::JointTrajectoryPoint pt;
+
     for (unsigned i = 0; i < q.rows(); i++)
       pt.positions.push_back(q(i));
 
     pt.time_from_start = rclcpp::Duration::from_seconds(1.5);
     traj.points.push_back(pt);
+    RCLCPP_INFO(get_logger(),
+    "📤 Publishing trajectory with %ld joints",
+    traj.joint_names.size());
 
     traj_pub_->publish(traj);
-
-    RCLCPP_INFO(get_logger(), "🦾 Trajectory sent (one-shot)");
   }
-
-  /* ---------------- members ---------------- */
 
   rclcpp::SyncParametersClient::SharedPtr param_client_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_sub_;
-  rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr target_sub_;
-  rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr pitch_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr pose_sub_;
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr traj_pub_;
 
   KDL::Tree tree_;
@@ -208,18 +236,16 @@ private:
   std::vector<std::string> joint_names_;
   std::vector<double> joint_pos_;
 
-  Eigen::Vector3d target_;
-  double target_pitch_{0.0};
+  KDL::Frame target_frame_;
 
   bool joints_ok_{false};
-  bool pitch_ok_{false};
   bool executing_{false};
 };
 
 int main(int argc, char **argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<KDLCartesianPointController>());
+  rclcpp::spin(std::make_shared<KDLCartesianController>());
   rclcpp::shutdown();
   return 0;
 }

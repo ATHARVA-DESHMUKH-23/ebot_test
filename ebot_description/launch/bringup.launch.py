@@ -158,6 +158,6 @@ def generate_launch_description():
         odom_controller,
         odom_nav_action_server,
 
-        kdl_cartesian_point_controller,
+        # kdl_cartesian_point_controller,
         pick_fsm_node,
     ])
