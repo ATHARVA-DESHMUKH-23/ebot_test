@@ -26,9 +26,9 @@ setup(
     # 🔴 THIS WAS MISSING — THIS IS THE FIX
     entry_points={
         'console_scripts': [
-            # 'fake_odom = ebot_slam.fake_odom:main',
-            'imu_node = ebot_slam.imu_node:main',
+            # 'fake_odom = ebot_slam.fake_odom:main','imu_node = ebot_slam.imu_node:main
             'scan_to_3d = ebot_slam.scan_to_3d:main',
+            'imu_ekf = ebot_slam.imu_ekf:main',
         ],
     },
 )

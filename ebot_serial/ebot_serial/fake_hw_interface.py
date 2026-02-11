@@ -17,8 +17,8 @@ class FakeHWInterface(Node):
         self.WHEEL_RADIUS = 0.0625      # meters
         self.WHEEL_BASE = 0.37          # meters
         self.TICKS_PER_REV = 1024
-        self.RPM_PER_UNIT = 1.47        # calibration
-        self.ACC_STEP = 5               # same as Arduino
+        self.RPM_PER_UNIT = 1.3        # calibration
+        self.ACC_STEP = 20               # same as Arduino
         self.SERIAL_TIMEOUT = 0.3       # seconds
 
         # ---------------- STATE ----------------
@@ -38,6 +38,7 @@ class FakeHWInterface(Node):
         self.last_time = time.time()
 
         self.MAX_LINEAR_SPEED = 1.5   # m/s (calibrated)
+        self.MAX_ANGULAR_SPEED = (2.0 * self.MAX_LINEAR_SPEED) / self.WHEEL_BASE
 
         # ---------------- ROS ----------------
         self.create_subscription(Twist, '/cmd_vel', self.cmd_cb, 10)
@@ -65,7 +66,7 @@ class FakeHWInterface(Node):
         v_unit = (v_ms / self.MAX_LINEAR_SPEED) * 255.0
 
         # angular velocity mapping
-        w_unit = (w_rads * self.WHEEL_BASE / 2.0) / self.MAX_LINEAR_SPEED * 255.0
+        w_unit = (w_rads / self.MAX_ANGULAR_SPEED) * 255.0
 
         return v_unit, w_unit
 
