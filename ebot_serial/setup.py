@@ -30,6 +30,7 @@ setup(
             'fake_hw_interface = ebot_serial.fake_hw_interface:main',
             'encoder_odimetery = ebot_serial.encoder_odimetery:main',
             'fake_imu_odom = ebot_serial.fake_imu_odom:main',
+            'magne = ebot_serial.magne:main',
 
         ],
     },
