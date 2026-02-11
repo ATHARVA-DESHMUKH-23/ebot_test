@@ -12,9 +12,9 @@ ekf_filter_node:
 
     publish_tf: true
 
-        # --------------------
-    # LIDAR ODOMETRY (RF2O)
-    # --------------------
+    #     # --------------------
+    # # LIDAR ODOMETRY (RF2O)
+    # # --------------------
     # odom1: /odom_rf2o
     # odom1_config: [
     #   true,  true,  false,   # x y z (pose)
@@ -24,6 +24,8 @@ ekf_filter_node:
     #   false, false, false
     # ]
 
+    # odom1_differential: false
+    # odom1_relative: false
     # odom1_differential: false
     # odom1_relative: false
 

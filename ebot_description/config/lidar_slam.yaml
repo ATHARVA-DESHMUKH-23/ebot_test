@@ -8,7 +8,9 @@ slam_toolbox:
     scan_topic: scan
 
     # Mode
-    mode: mapping
+    mode: localization
+    map_file_name: /home/rajvardhan/mobile_manipulator/map/office_map.yaml
+
 
     # Timing
     transform_timeout: 0.2
