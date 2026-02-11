@@ -1,0 +1,10 @@
+<library path="ebot_hardware">
+  <class
+    name="ebot_hardware/EbotHardware"
+    type="ebot_hardware::EbotHardware"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Unified arm + base hardware interface for ebot
+    </description>
+  </class>
+</library>

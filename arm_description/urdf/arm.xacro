@@ -9,6 +9,10 @@
   <!-- ===================== -->
   <xacro:property name="r" value="0.03"/>
   <xacro:property name="m" value="2.0"/>
+  <xacro:property name="m1" value="1.8"/>   <!-- base link -->
+  <xacro:property name="m2" value="1.5"/>   <!-- shoulder link -->
+  <xacro:property name="m3" value="1.0"/>   <!-- elbow link -->
+
 
   <xacro:property name="l1" value="0.10"/>
   <xacro:property name="l2" value="0.30"/>
@@ -41,11 +45,12 @@
   <xacro:macro name="cyl_inertia" params="m r l">
     <mass value="${m}"/>
     <inertia
-      ixx="${m*(3*r*r + l*l)/12}"
-      iyy="${m*(3*r*r + l*l)/12}"
-      izz="${m*(r*r)/2}"
+      ixx="${0.7 * m*(3*r*r + l*l)/12}"
+      iyy="${0.7 * m*(3*r*r + l*l)/12}"
+      izz="${0.7 * m*(r*r)/2}"
       ixy="0" ixz="0" iyz="0"/>
   </xacro:macro>
+
 
   <!-- ===================== -->
   <!-- ARM BASE -->
@@ -58,7 +63,7 @@
   <link name="arm_link_1">
     <inertial>
       <origin xyz="0 0 ${l1_half}"/>
-      <xacro:cyl_inertia m="${m}" r="${r}" l="${l1}"/>
+      <xacro:cyl_inertia m="${m1}" r="${r}" l="${l1}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 ${l1_half}"/>
@@ -87,8 +92,8 @@
   <!-- ===================== -->
   <link name="arm_link_2">
     <inertial>
-      <origin xyz="0 0 ${l2_half}"/>
-      <xacro:cyl_inertia m="${m}" r="${r}" l="${l2}"/>
+      <origin xyz="0 0 ${0.12}"/>
+      <xacro:cyl_inertia m="${m2}" r="${r}" l="${l2}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 ${l2_half}"/>
@@ -109,7 +114,7 @@
     <child link="arm_link_2"/>
     <origin xyz="0 0 ${l1}"/>
     <axis xyz="0 1 0"/>
-    <limit lower="-1.57" upper="1.57" effort="20" velocity="1.5"/>
+    <limit lower="-1.57" upper="1.57" effort="36" velocity="1.5"/>
   </joint>
 
   <!-- ===================== -->
@@ -117,8 +122,8 @@
   <!-- ===================== -->
   <link name="arm_link_3">
     <inertial>
-      <origin xyz="0 0 ${l3_half}"/>
-      <xacro:cyl_inertia m="${m}" r="${r}" l="${l3}"/>
+      <origin xyz="0 0 ${0.09}"/>
+      <xacro:cyl_inertia m="${m3}" r="${r}" l="${l3}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 ${l3_half}"/>
@@ -286,11 +291,11 @@
 
   <ros2_control name="ArmSystem" type="system">
   <hardware>
-    <plugin>ebot_arm_hardware/ArmHardware</plugin>
+    <!-- <plugin>ebot_arm_hardware/ArmHardware</plugin>
     <param name="port">/dev/ttyACM1</param>
-    <param name="baudrate">115200</param>
+    <param name="baudrate">115200</param> -->
 
-    <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
+    <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     <!-- <plugin>mock_components/GenericSystem</plugin> -->
     <!-- <param name="initial_positions">0 0 0 0</param> -->
   </hardware>
@@ -299,25 +304,25 @@
     <joint name="base_rotation_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <!-- <state_interface name="velocity"/> -->
+      <state_interface name="velocity"/>
     </joint>
 
     <joint name="shoulder_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <!-- <state_interface name="velocity"/> -->
+      <state_interface name="velocity"/>
     </joint>
 
     <joint name="elbow_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <!-- <state_interface name="velocity"/> -->
+      <state_interface name="velocity"/>
     </joint>
 
     <joint name="wrist_joint">
       <command_interface name="position"/>
       <state_interface name="position"/>
-      <!-- <state_interface name="velocity"/> -->
+      <state_interface name="velocity"/>
     </joint>
 
     <!-- <joint name="wrist_roll_joint">
@@ -341,7 +346,7 @@
       <state_interface name="position"/>
     </joint> -->
   
-    <!-- <joint name="FWRJ">
+    <joint name="FWRJ">
       <command_interface name="velocity"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
@@ -351,7 +356,7 @@
       <command_interface name="velocity"/>
       <state_interface name="position"/>
       <state_interface name="velocity"/>
-    </joint> -->
+    </joint>
 
   </ros2_control>
 

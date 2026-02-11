@@ -95,6 +95,8 @@ ament_target_dependencies(kdl_cartesian_servo
   kdl_parser
   orocos_kdl
   tf2
+  tf2_ros
+  tf2_geometry_msgs
 )
 
 add_executable(kdl_singularity_map src/kdl_singularity_map.cpp)
@@ -107,12 +109,42 @@ ament_target_dependencies(kdl_singularity_map
   orocos_kdl
 )
 
-add_executable(point_integration src/point_integration)
+add_executable(point_integration src/point_integration.cpp)
 
 ament_target_dependencies(point_integration
   rclcpp
   geometry_msgs
   visualization_msgs
+)
+
+add_executable(kdl_workspace_cloud src/kdl_workspace_cloud.cpp)
+
+ament_target_dependencies(kdl_workspace_cloud
+  rclcpp
+  visualization_msgs
+  urdf
+  kdl_parser
+  orocos_kdl
+)
+
+add_executable(kdl_entire_body_servoing src/kdl_entire_body_servoing.cpp)
+
+ament_target_dependencies(kdl_entire_body_servoing
+  rclcpp
+  rclcpp_action
+  geometry_msgs
+  nav_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  std_msgs
+  ebot_navigation_interfaces
+  visualization_msgs
+  control_msgs
+  trajectory_msgs
+  urdf
+  kdl_parser
+  orocos_kdl
 )
 
 # =========================
@@ -126,6 +158,8 @@ install(
     kdl_cartesian_servo
     kdl_singularity_map
     point_integration
+    kdl_workspace_cloud
+    kdl_entire_body_servoing
   DESTINATION lib/${PROJECT_NAME}
 )
 

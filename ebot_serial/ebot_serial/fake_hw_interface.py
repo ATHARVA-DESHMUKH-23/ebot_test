@@ -18,7 +18,7 @@ class FakeHWInterface(Node):
         self.WHEEL_BASE = 0.37          # meters
         self.TICKS_PER_REV = 1024
         self.RPM_PER_UNIT = 1.47        # calibration
-        self.ACC_STEP = 5               # same as Arduino
+        self.ACC_STEP = 20               # same as Arduino
         self.SERIAL_TIMEOUT = 0.3       # seconds
 
         # ---------------- STATE ----------------

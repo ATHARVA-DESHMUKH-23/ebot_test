@@ -17,9 +17,9 @@ class KeyboardEEVel(Node):
         # MUST match Cartesian servo
         self.pub = self.create_publisher(Twist, '/arm/cartesian_twist', 10)
 
-        self.speed_xy = 0.2   # m/s
-        self.speed_z  = 0.2   # m/s
-        self.speed_yaw = 0.2   # rad/s
+        self.speed_xy = 0.5   # m/s
+        self.speed_z  = 0.5   # m/s
+        self.speed_yaw = 0.5   # rad/s
 
         self.cmd = Twist()   # latched command
 

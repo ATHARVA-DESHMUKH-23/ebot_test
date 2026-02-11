@@ -63,6 +63,8 @@ public:
     traj_pub_ = create_publisher<trajectory_msgs::msg::JointTrajectory>(
       "/arm_controller/joint_trajectory", 10);
 
+    // cmd_vel_pub_ =
+    //   create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
     cmd_vel_pub_ =
       create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
 
@@ -132,7 +134,6 @@ private:
 
     cmd.twist.linear.x  = 0.0;
     cmd.twist.angular.z = 0.0;
-
 
     if (xdot_.norm() < 1e-4)
     {
@@ -291,6 +292,7 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr twist_sub_;
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr traj_pub_;
   rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_vel_pub_;
+  // rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 
   KDL::Tree tree_;

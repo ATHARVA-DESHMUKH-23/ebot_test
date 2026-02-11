@@ -67,8 +67,8 @@ diff_drive_controller:
     left_wheel_names:  ["FWLJ"]
     right_wheel_names: ["FWRJ"]
 
-    wheel_separation: 0.40
-    wheel_radius: 0.08
+    wheel_separation: 0.37
+    wheel_radius: 0.0625
 
     base_frame_id: ebot_base_link
     odom_frame_id: odom
