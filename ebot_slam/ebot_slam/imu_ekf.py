@@ -35,7 +35,7 @@ class MPU6050EKF(Node):
 
         self.yaw = 0.0
 
-        self.pub = self.create_publisher(Float64MultiArray, '/imu/rpy_deg', 10)
+        self.pub = self.create_publisher(Float64MultiArray, '/lidar_imu/rpy_deg', 10)
         self.timer = self.create_timer(0.5, self.update)  # 50 Hz
 
     def read_word(self, reg):

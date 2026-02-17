@@ -23,7 +23,7 @@ class ScanTo3D(Node):
             LaserScan, '/scan', self.scan_cb, 10)
 
         self.create_subscription(
-            Float64MultiArray, '/imu/rpy_deg', self.rpy_cb, 10)
+            Float64MultiArray, '/lidar_imu/rpy_deg', self.rpy_cb, 10)
 
         # Publisher
         self.pc_pub = self.create_publisher(
