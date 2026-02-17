@@ -62,12 +62,12 @@ def generate_launch_description():
             output='screen'
         ),
 
-        Node(
-            package='ebot_serial',
-            executable='magne',
-            name='magne',
-            output='screen'
-        ),
+        # Node(
+        #     package='ebot_serial',
+        #     executable='magne',
+        #     name='magne',
+        #     output='screen'
+        # ),
 
         # --------------------
         # Fake Hardware Interface

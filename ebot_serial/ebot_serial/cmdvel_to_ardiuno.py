@@ -19,8 +19,8 @@ class CmdVelToArduino(Node):
         self.get_logger().info("EBot Serial Driver Started")
 
     def cmd_callback(self, msg):
-        v = msg.linear.x
-        w = msg.angular.z
+        v = -msg.linear.x
+        w = -msg.angular.z
         data = f"{v:.2f},{w:.2f}\n"
         self.serial.write(data.encode())
 

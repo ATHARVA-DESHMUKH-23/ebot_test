@@ -30,6 +30,7 @@ setup(
             'scan_to_3d = ebot_slam.scan_to_3d:main',
             'imu_ekf = ebot_slam.imu_ekf:main',
             'imu_yaw = ebot_slam.imu_yaw:main',
+            'mag = ebot_slam.mag:main',
         ],
     },
 )
