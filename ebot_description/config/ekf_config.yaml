@@ -48,7 +48,7 @@ ekf_filter_node:
     # --------------------
     # IMU (MAG YAW)
     # --------------------
-    imu0: /imu/data
+    imu0: /fxos8700/imu
     imu0_config: [
       false, false, false,   # x y z
       false, false, true,    # roll pitch yaw  <-- TRUST YAW
@@ -58,3 +58,20 @@ ekf_filter_node:
     ]
 
     imu0_remove_gravitational_acceleration: true
+
+        # --------------------
+    # IMU (GYRO + ROLL/PITCH)
+    # --------------------
+    imu1: /imu/data
+    imu1_config: [
+      false, false, false,   # position
+      true,  true,  false,   # roll pitch yaw (yaw from gyro integration)
+      false, false, false,
+      false, false, true,    # angular velocity z (very important)
+      false, false, false
+    ]
+
+    imu1_differential: false
+    imu1_relative: false
+    imu1_remove_gravitational_acceleration: true
+

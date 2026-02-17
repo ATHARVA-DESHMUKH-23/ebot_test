@@ -142,13 +142,15 @@ class MPU6050EKF(Node):
         imu_msg.linear_acceleration.z = az * 9.81
 
         # Covariances (tune later if needed)
-        imu_msg.orientation_covariance = [0.05, 0, 0,
-                                          0, 0.05, 0,
-                                          0, 0, 0.05]
+        imu_msg.orientation_covariance = [
+                                            0.03, 0, 0,
+                                            0, 0.03, 0,
+                                            0, 0, 999.0   # ignore yaw orientation
+                                        ]
 
         imu_msg.angular_velocity_covariance = [0.02, 0, 0,
                                                0, 0.02, 0,
-                                               0, 0, 0.02]
+                                               0, 0, 0.01]
 
         imu_msg.linear_acceleration_covariance = [0.1, 0, 0,
                                                   0, 0.1, 0,
