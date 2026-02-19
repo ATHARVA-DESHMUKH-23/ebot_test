@@ -92,10 +92,10 @@ def generate_launch_description():
         # --------------------
         # Magnetometer Calibration Script
         # --------------------
-        ExecuteProcess(
-            cmd=['python3', magne_script],
-            output='screen'
-        ),
+        # ExecuteProcess(
+        #     cmd=['python3', magne_script],
+        #     output='screen'
+        # ),
 
         # --------------------
         # RPLidar

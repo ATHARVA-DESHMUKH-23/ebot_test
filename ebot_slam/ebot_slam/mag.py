@@ -23,17 +23,15 @@ class FXOS8700Node(Node):
         i2c = busio.I2C(board.SCL, board.SDA)
         self.sensor = adafruit_fxos8700.FXOS8700(i2c, address=0x1F)
 
-        # Hard iron offsets
-        self.mag_offset_x = 12.4
-        self.mag_offset_y = -16.25
-        self.mag_offset_z = 33.65
+       # Hard iron offsets
+        self.mag_offset_x = 24.5
+        self.mag_offset_y = -9.6
+        self.mag_offset_z = 39.65
 
         # Soft iron scale
-        self.mag_scale_x = 0.98
-        self.mag_scale_y = 1.02
+        self.mag_scale_x = 0.99
+        self.mag_scale_y = 1.01
         self.mag_scale_z = 1.0
-
-
 
 
         self.timer = self.create_timer(0.02, self.read_sensor)  # 50 Hz
@@ -85,6 +83,7 @@ class FXOS8700Node(Node):
                       mag_z * math.sin(roll) * math.cos(pitch))
 
         # ---- YAW ----
+
         yaw = -math.atan2(mag_y_comp, mag_x_comp)
 
         # normalize for EKF continuity
