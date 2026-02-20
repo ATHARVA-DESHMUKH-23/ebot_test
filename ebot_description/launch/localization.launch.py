@@ -7,7 +7,7 @@ import os
 
 def generate_launch_description():
 
-    map_file = '/home/rajvardhan/mobile_manipulator/map/office_map.yaml'
+    map_file = '/home/rajvardhan/mobile_manipulator/map/office_map4.yaml'
 
     return LaunchDescription([
 

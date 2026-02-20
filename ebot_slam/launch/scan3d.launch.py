@@ -47,4 +47,10 @@ def generate_launch_description():
             executable='scan_to_3d',
             output='screen'
         ),
+
+        Node(
+            package='ebot_serial',
+            executable='start_3d_lidar',
+            output='screen'
+        ),
     ])

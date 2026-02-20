@@ -69,7 +69,7 @@ class ScanTo3D(Node):
 
         header = Header()
         header.stamp = self.get_clock().now().to_msg()
-        header.frame_id = "laser"
+        header.frame_id = "3d_laser"
 
         cloud = point_cloud2.create_cloud_xyz32(header, points)
         self.pc_pub.publish(cloud)

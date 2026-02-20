@@ -244,6 +244,8 @@
   <!-- SENSORS -->
   <!-- ===================== -->
 
+  <!--laser-->
+
   <link name="laser">
     <visual>
       <geometry>
@@ -260,6 +262,44 @@
     <parent link="ebot_base"/>
     <child link="laser"/>
   </joint>
+
+  <!--3d lidar-->
+  <link name="3d_laser">
+    <visual>
+      <geometry>
+        <cylinder length="0.02" radius="0.01"/>
+      </geometry>
+            <material name="wheel_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="3d_lidar_joint" type="fixed">
+    <origin xyz="0.12 0.075 0.31"/>
+    <parent link="ebot_base"/>
+    <child link="3d_laser"/>
+  </joint>
+  
+  <!--imu on lidar-->
+  <link name="lidar_imu_link">
+    <visual>
+      <geometry>
+        <box size="0.10 0.015 0.008"/>
+      </geometry>
+            <material name="wheel_black">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="lidar_imu_joint" type="fixed">
+    <origin xyz="0.12 0.075 0.31"/>
+    <parent link="ebot_base"/>
+    <child link="lidar_imu_link"/>
+  </joint>
+
+  <!--bot imu-->
 
   <link name="imu_link">
     <visual>
