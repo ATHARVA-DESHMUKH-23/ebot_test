@@ -295,8 +295,8 @@
     <param name="port">/dev/ttyACM1</param>
     <param name="baudrate">115200</param> -->
 
-    <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
-    <plugin>mock_components/GenericSystem</plugin>
+    <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    <!-- <plugin>mock_components/GenericSystem</plugin> -->
     <!-- <param name="initial_positions">0 0 0 0</param> -->
   </hardware>
 

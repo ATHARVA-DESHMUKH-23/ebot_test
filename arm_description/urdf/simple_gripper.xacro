@@ -33,15 +33,21 @@
           <box size="${finger_length} ${finger_width} ${finger_height}"/>
         </geometry>
       </visual>
+
       <collision>
         <geometry>
           <box size="${finger_length} ${finger_width} ${finger_height}"/>
         </geometry>
       </collision>
-      <inertia
-        ixx="1e-5" ixy="0.0" ixz="0.0"
-        iyy="1e-5" iyz="0.0"
-        izz="1e-5"/>
+
+      <inertial>
+        <origin xyz="0 0 0"/>
+        <mass value="0.05"/>
+        <inertia
+          ixx="1e-5" ixy="0" ixz="0"
+          iyy="1e-5" iyz="0"
+          izz="1e-5"/>
+      </inertial>
     </link>
 
     <joint name="right_finger_joint" type="prismatic">
@@ -61,11 +67,13 @@
           <box size="${finger_length} ${finger_width} ${finger_height}"/>
         </geometry>
       </visual>
+
       <collision>
         <geometry>
           <box size="${finger_length} ${finger_width} ${finger_height}"/>
         </geometry>
       </collision>
+
       <inertial>
         <origin xyz="0 0 0"/>
         <mass value="0.05"/>
