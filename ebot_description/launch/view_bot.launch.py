@@ -34,11 +34,11 @@ def generate_launch_description():
     # --------------------
     # Magnetometer Script
     # --------------------
-    magne_script = os.path.join(
-        get_package_share_directory('ebot_serial'),
-        'scripts',
-        'magne.py'
-    )
+    # magne_script = os.path.join(
+    #     get_package_share_directory('ebot_serial'),
+    #     'scripts',
+    #     'magne.py'
+    # )
 
     return LaunchDescription([
 
@@ -89,6 +89,21 @@ def generate_launch_description():
             output='screen'
         ),
 
+        Node(
+            package='ebot_slam',
+            executable='imu_yaw',
+            name='imu_yaw',
+            output='screen'
+        ),
+
+        Node(
+            package='ebot_slam',
+            executable='mag',
+            name='mag',
+            output='screen'
+        ),
+
+        
         # --------------------
         # Magnetometer Calibration Script
         # --------------------
