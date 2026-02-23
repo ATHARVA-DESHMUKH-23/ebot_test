@@ -2,13 +2,9 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from std_msgs.msg import Float32
-import board
-import busio
-import adafruit_fxos8700
 import math
 from tf_transformations import quaternion_from_euler
 import time
-
 
 class FXOS8700Node(Node):
 
@@ -20,8 +16,22 @@ class FXOS8700Node(Node):
         self.yaw_pub = self.create_publisher(Float32, '/fxos8700/yaw', 10)
 
         # I2C
-        i2c = busio.I2C(board.SCL, board.SDA)
-        self.sensor = adafruit_fxos8700.FXOS8700(i2c, address=0x1F)
+        import smbus
+        import time
+
+        self.bus = smbus.SMBus(0)
+        self.addr = 0x1F
+
+        # Check WHO_AM_I
+        who = self.bus.read_byte_data(self.addr, 0x0D)
+        if who != 0xC7:
+            self.get_logger().error(f"FXOS8700 not detected! WHO_AM_I = {hex(who)}")
+            raise RuntimeError("FXOS8700 not found")
+
+        # Put into active mode
+        self.bus.write_byte_data(self.addr, 0x2A, 0x00)  # standby
+        self.bus.write_byte_data(self.addr, 0x5B, 0x1F)  # hybrid mode
+        self.bus.write_byte_data(self.addr, 0x2A, 0x0D)  # active
 
        # Hard iron offsets
         self.mag_offset_x = 24.5
@@ -48,9 +58,28 @@ class FXOS8700Node(Node):
         dt = now - self.last_time
         self.last_time = now
 
-        accel_x, accel_y, accel_z = self.sensor.accelerometer
-        mag_x, mag_y, mag_z = self.sensor.magnetometer
+        # Read magnetometer registers
+        data = self.bus.read_i2c_block_data(self.addr, 0x33, 6)
 
+        mag_x = (data[0] << 8 | data[1])
+        mag_y = (data[2] << 8 | data[3])
+        mag_z = (data[4] << 8 | data[5])
+
+        if mag_x > 32767: mag_x -= 65536
+        if mag_y > 32767: mag_y -= 65536
+        if mag_z > 32767: mag_z -= 65536
+
+        # Scale (0.1 uT per LSB approx)
+        mag_x *= 0.1
+        mag_y *= 0.1
+        mag_z *= 0.1
+
+        # For roll/pitch you are already using MPU, so
+        # if this node is magnetometer-only,
+        # you can remove accel normalization here
+        accel_x = 0.0
+        accel_y = 0.0
+        accel_z = 1.0
         # Apply hard iron offsets
         # Hard iron
         mag_x -= self.mag_offset_x

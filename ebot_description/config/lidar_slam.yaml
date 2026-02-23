@@ -9,7 +9,7 @@ slam_toolbox:
 
     # Mode
     mode: localization
-    map_file_name: /home/rajvardhan/mobile_manipulator/map/office_map.yaml
+    map_file_name: /home/rajvardhan/mobile_manipulator/map/office_map4.yaml
 
 
     # Timing

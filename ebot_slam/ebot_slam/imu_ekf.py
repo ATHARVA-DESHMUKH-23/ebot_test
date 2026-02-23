@@ -24,7 +24,7 @@ class MPU6050EKF(Node):
     def __init__(self):
         super().__init__('imu_ekf')
 
-        self.bus = smbus.SMBus(0)
+        self.bus = smbus.SMBus(1)
         self.bus.write_byte_data(MPU_ADDR, PWR_MGMT_1, 0x00)
         time.sleep(0.1)
 

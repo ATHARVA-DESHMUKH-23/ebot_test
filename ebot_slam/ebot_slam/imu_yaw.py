@@ -25,7 +25,7 @@ class MPU6050EKF(Node):
     def __init__(self):
         super().__init__('imu_ekf_node')
 
-        self.bus = smbus.SMBus(1)
+        self.bus = smbus.SMBus(0)
 
         # Wake MPU6050
         self.bus.write_byte_data(MPU_ADDR, PWR_MGMT_1, 0x00)
@@ -158,9 +158,9 @@ class MPU6050EKF(Node):
 
         self.pub.publish(imu_msg)
 
-        self.get_logger().info(
-            f"Roll={roll:.2f}  Pitch={pitch:.2f}  Yaw={self.yaw:.2f}"
-        )
+        # self.get_logger().info(
+        #     f"Roll={roll:.2f}  Pitch={pitch:.2f}  Yaw={self.yaw:.2f}"
+        # )
 
 
 def main():
