@@ -11,8 +11,8 @@ controller_manager:
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-    # gripper_controller:
-    #   type: position_controllers/JointGroupPositionController
+    gripper_controller:
+      type: position_controllers/JointGroupPositionController
 
     diff_drive_controller:
       type: diff_drive_controller/DiffDriveController
@@ -20,13 +20,11 @@ controller_manager:
 arm_controller:
   ros__parameters:
     joints:
-      - base_rotation_joint
-      - shoulder_joint
-      - elbow_joint
-      - wrist_joint
-      - wrist_roll_joint
-      - wrist_yaw_joint
-
+      - Joint_1
+      - Joint_2
+      - Joint_3
+      - Joint_4
+      - Joint_5
 
     # The controller will expect position commands as input for each of these joints.
     command_interfaces:
@@ -36,6 +34,7 @@ arm_controller:
     # feedback from the hardware interface.
     state_interfaces:
       - position
+      - velocity
 
     # If true, When set to true, the controller will not use any feedback from the system
     # (e.g., joint positions, velocities, efforts) to compute the control commands.
@@ -53,8 +52,8 @@ arm_controller:
 gripper_controller:
   ros__parameters:
     joints:
-      - right_finger_joint
-
+      - Gripper_Servo_Gear_Joint
+      - Gripper_Idol_Gear_Joint
     command_interfaces:
       - position
 

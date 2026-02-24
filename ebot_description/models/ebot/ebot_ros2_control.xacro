@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="ebot_ros2_control">
+
+    <ros2_control name="EbotSystem" type="system">
+    <hardware>
+        <!-- <plugin>ebot_arm_hardware/ArmHardware</plugin>
+        <param name="port">/dev/ttyACM1</param>
+        <param name="baudrate">115200</param> -->
+
+        <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
+        <plugin>mock_components/GenericSystem</plugin>
+        <!-- <param name="initial_positions">0 0 0 0</param> -->
+    </hardware>
+
+
+        <joint name="Joint_1">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="Joint_2">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="Joint_3">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="Joint_4">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="Joint_5">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="Gripper_Servo_Gear_Joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        </joint>
+
+        <joint name="Gripper_Idol_Gear_Joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        </joint>
+    
+        <joint name="FWRJ">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="FWLJ">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        </joint>
+
+    </ros2_control>
+
+  
+  </xacro:macro>
+
+</robot>

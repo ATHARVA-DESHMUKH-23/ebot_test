@@ -5,6 +5,7 @@
   <!-- <xacro:include filename="$(find arm_description)/urdf/arm.xacro" /> -->
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot_gazebo_control.xacro"/>
   <xacro:include filename="$(find moveo_description)/urdf/moveo_urdf.urdf.xacro"/>
+  <xacro:include filename="$(find ebot_description)/models/ebot/ebot_ros2_control.xacro"/>
 
   <xacro:moveo_arm prefix="moveo_"/>
 
@@ -325,7 +326,7 @@
     <child link="imu_link"/>
   </joint>
 
-
+<xacro:ebot_ros2_control/>
 <xacro:ebot_gazebo_ros2_control/>
 
 </robot>
