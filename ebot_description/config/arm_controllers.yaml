@@ -34,11 +34,11 @@ arm_controller:
     # feedback from the hardware interface.
     state_interfaces:
       - position
-      - velocity
+      # - velocity
 
     # If true, When set to true, the controller will not use any feedback from the system
     # (e.g., joint positions, velocities, efforts) to compute the control commands.
-    open_loop_control: false
+    open_loop_control: true
 
     # When set to true, it allows the controller to integrate the trajectory goals it receives.
     # This means that if the goal trajectory only specifies positions, the controller will
@@ -49,16 +49,16 @@ arm_controller:
     # Allow non-zero velocity at the end of the trajectory
     allow_nonzero_velocity_at_trajectory_end: false
 
-gripper_controller:
-  ros__parameters:
-    joints:
-      - Gripper_Servo_Gear_Joint
-      - Gripper_Idol_Gear_Joint
-    command_interfaces:
-      - position
+# gripper_controller:
+#   ros__parameters:
+#     joints:
+#       - Gripper_Servo_Gear_Joint
+#       - Gripper_Idol_Gear_Joint
+#     command_interfaces:
+#       - position
 
-    state_interfaces:
-      - position
+#     state_interfaces:
+#       - position
 
 
 diff_drive_controller:
