@@ -8,6 +8,8 @@ import os
 def generate_launch_description():
 
     map_file = '/home/rajvardhan/mobile_manipulator/map/office_map5.yaml'
+    pkg_dir = get_package_share_directory('ebot_description')
+    amcl_params = os.path.join(pkg_dir, 'config', 'amcl.yaml')
 
     return LaunchDescription([
 
@@ -24,13 +26,7 @@ def generate_launch_description():
             executable='amcl',
             name='amcl',
             output='screen',
-            parameters=[{
-                'use_sim_time': False,
-                'base_frame_id': 'ebot_base_link',
-                'odom_frame_id': 'odom',
-                'scan_topic': '/scan',
-                'transform_tolerance': 0.5,
-            }]
+            parameters=[amcl_params],
         ),
 
         Node(
