@@ -5,11 +5,11 @@
 
     <ros2_control name="EbotSystem" type="system">
     <hardware>
-        <plugin>moveo_hardware/MoveoSystem</plugin>
+        <!-- <plugin>moveo_hardware/MoveoSystem</plugin>
         <param name="port">/dev/ttyACM0</param>
-        <param name="baudrate">115200</param>
+        <param name="baudrate">115200</param> -->
 
-        <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         <!-- <plugin>mock_components/GenericSystem</plugin> -->
         <!-- <param name="initial_positions">0 0 0 0</param> -->
     </hardware>
@@ -18,19 +18,19 @@
         <joint name="Joint_1">
         <command_interface name="position"/>
         <state_interface name="position"/>
-        <!-- <state_interface name="velocity"/> -->
+        <state_interface name="velocity"/>
         </joint>
 
         <joint name="Joint_2">
         <command_interface name="position"/>
         <state_interface name="position"/>
-        <!-- <state_interface name="velocity"/> -->
+        <state_interface name="velocity"/>
         </joint>
 
         <joint name="Joint_3">
         <command_interface name="position"/>
         <state_interface name="position"/>
-        <!-- <state_interface name="velocity"/> -->
+        <state_interface name="velocity"/>
         </joint>
 
         <joint name="Joint_4">
@@ -42,10 +42,10 @@
         <joint name="Joint_5">
         <command_interface name="position"/>
         <state_interface name="position"/>
-        <!-- <state_interface name="velocity"/>/ -->
+        <state_interface name="velocity"/>/
         </joint>
 
-        <!-- <joint name="Gripper_Servo_Gear_Joint">
+        <joint name="Gripper_Servo_Gear_Joint">
         <command_interface name="position"/>
         <state_interface name="position"/>
         </joint>
@@ -65,7 +65,7 @@
         <command_interface name="velocity"/>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        </joint> -->
+        </joint>
 
     </ros2_control>
 

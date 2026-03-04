@@ -31,8 +31,8 @@
   <!-- ===================== -->
   <gazebo reference="laser">
     <sensor name="laser" type="gpu_lidar">
-      <always_on>true</always_on>
-      <visualize>false</visualize>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
       <topic>scan</topic>
       <update_rate>10</update_rate>
       <gz_frame_id>laser</gz_frame_id>
@@ -41,8 +41,9 @@
         <scan>
           <horizontal>
             <samples>360</samples>
-            <min_angle>-1.57</min_angle>
-            <max_angle>1.57</max_angle>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
           </horizontal>
         </scan>
         <range>
@@ -50,6 +51,11 @@
           <max>8.0</max>
         </range>
       </lidar>
+
+      <plugin filename="gz-sim-sensors-system"
+              name="gz::sim::systems::Sensors">
+              <render_engine>ogre2</render_engine>
+      </plugin>
     </sensor>
   </gazebo>
 

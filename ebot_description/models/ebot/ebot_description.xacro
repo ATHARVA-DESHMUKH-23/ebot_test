@@ -49,7 +49,7 @@
   <link name="ebot_base">
     <inertial>
       <origin xyz="0 0 0.12"/>
-      <xacro:box_inertia b_mass="${base_mass}" b_x="0.585" b_y="0.50" b_z="0.25"/>
+      <xacro:box_inertia b_mass="${base_mass}" b_x="0.510" b_y="0.30" b_z="0.10"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0.07"/>
@@ -63,7 +63,7 @@
     <collision>
       <origin xyz="0 0 0.12"/>
       <geometry>
-        <box size="0.585 0.50 0.25"/>
+        <box size="0.510 0.30 0.10"/>
       </geometry>
     </collision>
   </link>
@@ -90,12 +90,12 @@
   <!-- Front Right -->
   <link name="FWR">
     <inertial>
-      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.08" l="0.05"/>
+      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.0625" l="0.05"/>
     </inertial>
     <visual>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.05" radius="0.0625"/>
       </geometry>
       <material name="wheel_black">
         <color rgba="0.02 0.02 0.02 1.0"/>
@@ -104,13 +104,13 @@
     <collision>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.05" radius="0.0625"/>
       </geometry>
     </collision>
   </link>
 
   <joint name="FWRJ" type="continuous">
-    <origin xyz="0 -0.20 0.045"/>
+    <origin xyz="0 -0.19 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWR"/>
     <axis xyz="0 1 0"/>
@@ -122,12 +122,12 @@
   <!-- Front Left -->
   <link name="FWL">
     <inertial>
-      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.08" l="0.05"/>
+      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.0625" l="0.05"/>
     </inertial>
     <visual>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.05" radius="0.0625"/>
       </geometry>
      <material name="wheel_black">
         <color rgba="0.02 0.02 0.02 1.0"/>
@@ -136,13 +136,13 @@
     <collision>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.05" radius="0.0625"/>
       </geometry>
     </collision>
   </link>
 
   <joint name="FWLJ" type="continuous">
-    <origin xyz="0 0.20 0.045"/>
+    <origin xyz="0 0.19 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWL"/>
     <axis xyz="0 1 0"/>
@@ -188,19 +188,19 @@
 <link name="BC_FRONT">
   <visual>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
     <material name="wheel_black"/>
   </visual>
   <collision>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
   </collision>
 </link>
 
 <joint name="BC_FRONT_J" type="fixed">
-  <origin xyz="0.20 0.1 -0.0200"/>
+  <origin xyz="0.20 0.1 -0.0030"/>
   <parent link="ebot_base"/>
   <child link="BC_FRONT"/>
 </joint>
@@ -209,19 +209,19 @@
 <link name="BC_BACK">
   <visual>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
     <material name="wheel_black"/>
   </visual>
   <collision>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
   </collision>
 </link>
 
 <joint name="BC_BACK_J" type="fixed">
-  <origin xyz="-0.19 0.1 -0.0200"/>
+  <origin xyz="-0.19 0.1 -0.0030"/>
   <parent link="ebot_base"/>
   <child link="BC_BACK"/>
 </joint>
@@ -230,19 +230,19 @@
 <link name="BC_LEFT">
   <visual>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
     <material name="wheel_black"/>
   </visual>
   <collision>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
   </collision>
 </link>
 
 <joint name="BC_LEFT_J" type="fixed">
-  <origin xyz="0.20 -0.1 -0.0200"/>
+  <origin xyz="0.20 -0.1 -0.0030"/>
   <parent link="ebot_base"/>
   <child link="BC_LEFT"/>
 </joint>
@@ -251,19 +251,19 @@
 <link name="BC_RIGHT">
   <visual>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
     <material name="wheel_black"/>
   </visual>
   <collision>
     <geometry>
-      <sphere radius="0.015"/>
+      <sphere radius="0.010"/>
     </geometry>
   </collision>
 </link>
 
 <joint name="BC_RIGHT_J" type="fixed">
-  <origin xyz="-0.19 -0.1 -0.0200"/>
+  <origin xyz="-0.19 -0.1 -0.0030"/>
   <parent link="ebot_base"/>
   <child link="BC_RIGHT"/>
 </joint> 
@@ -297,7 +297,7 @@
       <geometry>
         <cylinder length="0.04" radius="0.03"/>
       </geometry>
-            <material name="wheel_black">
+      <material name="wheel_black">
         <color rgba="0.02 0.02 0.02 1.0"/>
       </material>
     </visual>

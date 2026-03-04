@@ -33,8 +33,14 @@ def generate_launch_description():
     # -----------------------------
     # Gazebo Harmonic
     # -----------------------------
+    world_file = PathJoinSubstitution([
+        FindPackageShare('ebot_description'),
+        'worlds',
+        'officemap.world'
+    ])
+
     gz_sim = ExecuteProcess(
-        cmd=['gz', 'sim', '-r', 'empty.sdf'],
+        cmd=['gz', 'sim', '-r', world_file],
         output='screen'
     )
 
@@ -45,7 +51,8 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan'
         ],
         output='screen'
     )
@@ -57,8 +64,12 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         arguments=[
+            '-world', 'officemap_world',
             '-topic', 'robot_description',
-            '-name', 'ebot'
+            '-name', 'ebot',
+            '-x', '0',
+            '-y', '0',
+            '-z', '0.1'
         ],
         output='screen'
     )
