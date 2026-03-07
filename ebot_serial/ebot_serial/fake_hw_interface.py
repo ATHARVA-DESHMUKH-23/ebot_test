@@ -48,7 +48,7 @@ class FakeHWInterface(Node):
 
         # ---------------- SERIAL ----------------
         try:
-            self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.01)
+            self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
             self.get_logger().info('Serial connected')
         except:
             self.ser = None

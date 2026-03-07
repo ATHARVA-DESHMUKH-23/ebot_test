@@ -44,7 +44,7 @@ class FXOS8700Node(Node):
         self.mag_scale_z = 1.0
 
 
-        self.timer = self.create_timer(0.02, self.read_sensor)  # 50 Hz
+        self.timer = self.create_timer(0.1, self.read_sensor)  # 50 Hz
 
         # ---- yaw rate helpers ----
         self.last_yaw = None
@@ -143,12 +143,12 @@ class FXOS8700Node(Node):
         imu_msg.orientation_covariance = [
             999.0, 0.0,   0.0,
             0.0,   999.0, 0.0,
-            0.0,   0.0,   0.02
+            0.0,   0.0,   0.5
         ]
 
 
         # Angular velocity (yaw rate)
-        imu_msg.angular_velocity.z = yaw_rate
+        imu_msg.angular_velocity.z = 0.0
         imu_msg.angular_velocity_covariance = [
             -1.0, 0.0, 0.0,
              0.0, -1.0, 0.0,

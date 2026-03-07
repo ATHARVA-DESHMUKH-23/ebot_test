@@ -139,7 +139,7 @@ class BMM150YawNode(Node):
 
         # Disable linear acceleration
         imu.linear_acceleration_covariance[0] = -1.0
-        # print(f"Yaw: {math.degrees(yaw_filt):.2f} deg, Yaw Rate: {math.degrees(yaw_rate):.2f} deg/s")
+        print(f"Yaw: {math.degrees(yaw_filt):.2f} deg, Yaw Rate: {math.degrees(yaw_rate):.2f} deg/s")
 
         self.pub.publish(imu)
 

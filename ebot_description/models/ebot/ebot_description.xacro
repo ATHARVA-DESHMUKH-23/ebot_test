@@ -54,9 +54,9 @@
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0.12"/>
+      <origin xyz="0 0 0.07"/>
       <geometry>
-        <box size="0.585 0.50 0.25"/>
+        <box size="0.510 0.30 0.10"/>
       </geometry>
     </collision>
   </link>
@@ -73,12 +73,12 @@
   <!-- Front Right -->
   <link name="FWR">
     <inertial>
-      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.08" l="0.05"/>
+      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.0625" l="0.03"/>
     </inertial>
     <visual>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.03" radius="0.0625"/>
       </geometry>
       <material name="wheel_black">
         <color rgba="0.02 0.02 0.02 1.0"/>
@@ -87,13 +87,13 @@
     <collision>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.03" radius="0.0625"/>
       </geometry>
     </collision>
   </link>
 
   <joint name="FWRJ" type="continuous">
-    <origin xyz="0 -0.20 0.045"/>
+    <origin xyz="0 -0.18 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWR"/>
     <axis xyz="0 1 0"/>
@@ -102,12 +102,12 @@
   <!-- Front Left -->
   <link name="FWL">
     <inertial>
-      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.08" l="0.05"/>
+      <xacro:cylinder_inertia c_mass="${wheel_mass}" r="0.0625" l="0.03"/>
     </inertial>
     <visual>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.03" radius="0.0625"/>
       </geometry>
      <material name="wheel_black">
         <color rgba="0.02 0.02 0.02 1.0"/>
@@ -116,13 +116,13 @@
     <collision>
       <origin rpy="1.5708 0 0"/>
       <geometry>
-        <cylinder length="0.05" radius="0.08"/>
+        <cylinder length="0.03" radius="0.0625"/>
       </geometry>
     </collision>
   </link>
 
   <joint name="FWLJ" type="continuous">
-    <origin xyz="0 0.20 0.045"/>
+    <origin xyz="0 0.18 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWL"/>
     <axis xyz="0 1 0"/>
@@ -133,8 +133,8 @@
   <!-- ===================== -->
 
   <!-- ===================== -->
-<!-- BALL CASTERS (4-DIRECTION SUPPORT) -->
-<!-- ===================== -->
+  <!-- BALL CASTERS (4-DIRECTION SUPPORT) -->
+  <!-- ===================== -->
 
 <!-- FRONT ball caster -->
 <link name="BC_FRONT">

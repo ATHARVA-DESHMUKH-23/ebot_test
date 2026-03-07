@@ -1,7 +1,7 @@
 ekf_filter_node:
   ros__parameters:
 
-    frequency: 50.0
+    frequency: 30.0
     sensor_timeout: 0.1
     two_d_mode: true
 
@@ -38,7 +38,7 @@ ekf_filter_node:
       false, false, false,   # x y z (pose)
       false, false, false,   # roll pitch yaw
       true,  false, false,   # vx vy vz
-      false, false, true,    # wx wy wz  (we will DOWNWEIGHT this)
+      false, false, false,    # wx wy wz  (we will DOWNWEIGHT this)
       false, false, false
     ]
 
