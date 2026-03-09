@@ -2,16 +2,25 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
+from std_msgs.msg import Float32
 import serial
+
 
 
 class CmdVelToArduino(Node):
 
+
     def __init__(self):
         super().__init__('cmdvel_to_arduino')
 
-        self.serial = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+        self.serial = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
 
+        # store latest values
+        self.v = 0.0
+        self.w = 0.0
+        self.bot_yaw = 0.0
+
+        # subscribers
         # store latest values
         self.v = 0.0
         self.w = 0.0
@@ -33,12 +42,31 @@ class CmdVelToArduino(Node):
         )
 
         # timer → 20 Hz serial transmission
-        self.timer = self.create_timer(0.1, self.send_serial)
+        self.timer = self.create_timer(0.05, self.send_serial)
 
         self.get_logger().info("EBot Serial Driver Started")
 
 
+
     def cmd_callback(self, msg):
+        self.v = -msg.linear.x
+        self.w = -msg.angular.z
+
+
+    def yaw_callback(self, msg):
+        self.bot_yaw = msg.data
+
+
+    def send_serial(self):
+
+        data = f"{self.v:.2f},{self.w:.2f},{self.bot_yaw:.2f}\n"
+        print(f"Sending to Arduino: {data.strip()}")
+
+        try:
+            self.serial.write(data.encode())
+        except:
+            self.get_logger().warn("Serial write failed")
+
         self.v = -msg.linear.x
         self.w = -msg.angular.z
 
@@ -64,6 +92,8 @@ def main():
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
+
 
 
 if __name__ == '__main__':
