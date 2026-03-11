@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--This does not replace URDF, and is not an extension of URDF.
     This is a format for representing semantic information about the robot structure.
     A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
@@ -46,6 +46,7 @@
     <disable_collisions link1="Gripper_Idol_Gear" link2="Pivot_Arm_Gripper_Servo" reason="Never" />
     <disable_collisions link1="Gripper_Idol_Gear" link2="Tip_Gripper_Idol" reason="Adjacent" />
     <disable_collisions link1="Gripper_Idol_Gear" link2="Tip_Gripper_Servo" reason="Never" />
+    
     <disable_collisions link1="Gripper_Servo_Gear" link2="Link_1" reason="Never" />
     <disable_collisions link1="Gripper_Servo_Gear" link2="Link_2" reason="Never" />
     <disable_collisions link1="Gripper_Servo_Gear" link2="Link_3" reason="Never" />
@@ -55,6 +56,7 @@
     <disable_collisions link1="Gripper_Servo_Gear" link2="Pivot_Arm_Gripper_Servo" reason="User" />
     <disable_collisions link1="Gripper_Servo_Gear" link2="Tip_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Gripper_Servo_Gear" link2="Tip_Gripper_Servo" reason="Adjacent" />
+    
     <disable_collisions link1="Link_1" link2="Link_2" reason="Adjacent" />
     <disable_collisions link1="Link_1" link2="Link_3" reason="Never" />
     <disable_collisions link1="Link_1" link2="Link_4" reason="Never" />
@@ -63,7 +65,8 @@
     <disable_collisions link1="Link_1" link2="Pivot_Arm_Gripper_Servo" reason="Never" />
     <disable_collisions link1="Link_1" link2="Tip_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_1" link2="Tip_Gripper_Servo" reason="Never" />
-    <disable_collisions link1="Link_1" link2="base_link" reason="Adjacent" />
+    <disable_collisions link1="Link_1" link2="moveo_base_link" reason="Adjacent" />
+    
     <disable_collisions link1="Link_2" link2="Link_3" reason="Adjacent" />
     <disable_collisions link1="Link_2" link2="Link_4" reason="Never" />
     <disable_collisions link1="Link_2" link2="Link_5" reason="Never" />
@@ -71,23 +74,30 @@
     <disable_collisions link1="Link_2" link2="Pivot_Arm_Gripper_Servo" reason="Never" />
     <disable_collisions link1="Link_2" link2="Tip_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_2" link2="Tip_Gripper_Servo" reason="Never" />
-    <disable_collisions link1="Link_2" link2="base_link" reason="Never" />
+    <disable_collisions link1="Link_2" link2="moveo_base_link" reason="Never" />
+    
     <disable_collisions link1="Link_3" link2="Link_4" reason="Adjacent" />
     <disable_collisions link1="Link_3" link2="Link_5" reason="Never" />
     <disable_collisions link1="Link_3" link2="Pivot_Arm_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_3" link2="Pivot_Arm_Gripper_Servo" reason="Never" />
     <disable_collisions link1="Link_3" link2="Tip_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_3" link2="Tip_Gripper_Servo" reason="Never" />
-    <disable_collisions link1="Link_3" link2="base_link" reason="Never" />
+    <disable_collisions link1="Link_3" link2="moveo_base_link" reason="Never" />
+    
     <disable_collisions link1="Link_4" link2="Link_5" reason="Adjacent" />
     <disable_collisions link1="Link_4" link2="Pivot_Arm_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_4" link2="Pivot_Arm_Gripper_Servo" reason="Never" />
     <disable_collisions link1="Link_4" link2="Tip_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_4" link2="Tip_Gripper_Servo" reason="Never" />
+    
     <disable_collisions link1="Link_5" link2="Pivot_Arm_Gripper_Idol" reason="Adjacent" />
     <disable_collisions link1="Link_5" link2="Pivot_Arm_Gripper_Servo" reason="Adjacent" />
     <disable_collisions link1="Link_5" link2="Tip_Gripper_Idol" reason="Never" />
     <disable_collisions link1="Link_5" link2="Tip_Gripper_Servo" reason="Never" />
+    
+    <disable_collisions link1="ebot_base" link2="moveo_base_link" reason="Adjacent"/>
+    <disable_collisions link1="Link_1" link2="ebot_base" reason="Adjacent"/>
+    
     <disable_collisions link1="Pivot_Arm_Gripper_Idol" link2="Pivot_Arm_Gripper_Servo" reason="Never" />
     <disable_collisions link1="Pivot_Arm_Gripper_Idol" link2="Tip_Gripper_Idol" reason="Default" />
     <disable_collisions link1="Pivot_Arm_Gripper_Idol" link2="Tip_Gripper_Servo" reason="Never" />

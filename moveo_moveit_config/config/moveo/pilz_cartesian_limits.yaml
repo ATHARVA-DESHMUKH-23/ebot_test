@@ -1,0 +1,9 @@
+cartesian_limits:
+  # Maximum velocity in Cartesian space (m/s)
+  max_trans_vel: 1.0
+  # Maximum acceleration in Cartesian space (m/s^2)
+  max_trans_acc: 2.25
+  # Maximum rotational velocity in Cartesian space (rad/s)
+  max_rot_vel: 1.57
+  # Maximum rotational acceleration in Cartesian space (rad/s^2)
+  max_trans_dec: -5.0
