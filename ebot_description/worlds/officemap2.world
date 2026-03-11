@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="officemap2_world">
+    <gravity>0 0 -9.8</gravity>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+    </scene>
+    <!-- Ground plane: pure white (no textures) -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_219_657">
+      <static>true</static>
+      <pose>0.8488 0.5935 1.2500 0 0 0.000000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.3078 0.2964 2.5000</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.3078 0.2964 2.5000</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1.0</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_238_435">
+      <static>true</static>
+      <pose>-0.3396 0.4253 1.2500 0 0 0.000000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.4617 0.4161 2.5000</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.4617 0.4161 2.5000</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1.0</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_462_668">
+      <static>true</static>
+      <pose>0.9058 -0.7859 1.2500 0 0 0.000000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.2964 0.2850 2.5000</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.2964 0.2850 2.5000</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1.0</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_565_476">
+      <static>true</static>
+      <pose>-0.1829 -1.4385 1.2500 0 0 0.000000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.3078 0.4161 2.5000</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.3078 0.4161 2.5000</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1.0</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_601_588">
+      <static>true</static>
+      <pose>0.6750 -1.5639 1.2500 0 0 0.000000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.7467 0.2565 2.5000</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.7467 0.2565 2.5000</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1.0</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

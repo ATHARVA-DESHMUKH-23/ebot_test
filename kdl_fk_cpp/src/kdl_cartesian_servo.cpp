@@ -33,7 +33,7 @@ public:
     auto robot = urdf::parseURDF(params[0].as_string());
 
     if (!kdl_parser::treeFromUrdfModel(*robot, tree_) ||
-        !tree_.getChain("arm_base_link", "tool0", chain_))
+        !tree_.getChain("moveo_base_link", "Link_5", chain_))
     {
       RCLCPP_FATAL(get_logger(), "Failed to build KDL chain");
       rclcpp::shutdown();

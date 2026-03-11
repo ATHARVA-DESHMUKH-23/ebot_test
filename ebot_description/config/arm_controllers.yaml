@@ -49,16 +49,16 @@ arm_controller:
     # Allow non-zero velocity at the end of the trajectory
     allow_nonzero_velocity_at_trajectory_end: false
 
-# gripper_controller:
-#   ros__parameters:
-#     joints:
-#       - Gripper_Servo_Gear_Joint
-#       - Gripper_Idol_Gear_Joint
-#     command_interfaces:
-#       - position
+gripper_controller:
+  ros__parameters:
+    joints:
+      - Gripper_Servo_Gear_Joint
+      - Gripper_Idol_Gear_Joint
+    command_interfaces:
+      - position
 
-#     state_interfaces:
-#       - position
+    state_interfaces:
+      - position
 
 
 diff_drive_controller:
@@ -75,4 +75,4 @@ diff_drive_controller:
     publish_rate: 50.0
 
     cmd_vel_timeout: 0.5
-    use_stamped_vel: true
+    use_stamped_vel: false

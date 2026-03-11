@@ -32,7 +32,7 @@ public:
     auto robot = urdf::parseURDF(params[0].as_string());
 
     if (!kdl_parser::treeFromUrdfModel(*robot, tree_) ||
-        !tree_.getChain("arm_base_link", "tool0", chain_))
+        !tree_.getChain("moveo_base_link", "Link_5", chain_))
     {
       RCLCPP_FATAL(get_logger(), "Failed to build KDL chain");
       rclcpp::shutdown();
@@ -43,6 +43,12 @@ public:
     jac_solver_ = std::make_shared<KDL::ChainJntToJacSolver>(chain_);
 
     RCLCPP_INFO(get_logger(), "KDL ready | joints=%d", chain_.getNrOfJoints());
+    for(unsigned i=0;i<chain_.getNrOfSegments();i++)
+      {
+          auto j = chain_.getSegment(i).getJoint();
+          RCLCPP_INFO(get_logger(),"Joint: %s Type: %d",
+              j.getName().c_str(), j.getType());
+      }
 
     joint_sub_ = create_subscription<sensor_msgs::msg::JointState>(
       "/joint_states", 10,
