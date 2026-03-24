@@ -37,6 +37,8 @@ setup(
             'cartesian_servo_kdl = ebot_serial.cartesian_servo_kdl:main',
             'cartesian_point = ebot_serial.cartesian_point:main',
             'kdl_fk_test = ebot_serial.kdl_fk:main',
+            'aruco_perception = ebot_serial.aruco_perception:main',
+            'aruco_state_machine = ebot_serial.aruco_state_machine:main',
         ],
     },
 )

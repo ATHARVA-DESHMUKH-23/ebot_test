@@ -2,6 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd"
             schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
+
   <name>ebot_navigation</name>
   <version>0.0.0</version>
   <description>Runtime navigation nodes</description>
@@ -9,12 +10,27 @@
   <maintainer email="atharvad2366@gmail.com">rajvardhan</maintainer>
   <license>Apache-2.0</license>
 
-  <!-- Runtime dependencies -->
+  <!-- Core -->
   <depend>rclpy</depend>
+
+  <!-- Messages -->
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>action_msgs</depend>
+
+  <!-- TF (VERY IMPORTANT for navigation systems) -->
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+
+  <!-- Nav2 interaction (recommended) -->
+  <depend>nav2_msgs</depend>
+
+  <!-- Your custom interfaces -->
   <depend>ebot_navigation_interfaces</depend>
+
+  <!-- Launch system (YOU ARE USING LAUNCH FILES) -->
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
 
   <!-- Testing -->
   <test_depend>ament_flake8</test_depend>
@@ -24,4 +40,5 @@
   <export>
     <build_type>ament_python</build_type>
   </export>
+
 </package>

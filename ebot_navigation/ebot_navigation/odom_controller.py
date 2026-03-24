@@ -1,122 +1,137 @@
-#!/usr/bin/env python3
-
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist, PoseStamped
+from enum import Enum
+import tf2_ros
+from geometry_msgs.msg import Twist
 import math
 
-# ---------------- PARAMETERS ----------------
-CONTROL_HZ = 20.0
-POS_TOLERANCE = 0.4
-YAW_TOLERANCE = math.radians(15)
 
-KP_LINEAR = 0.4
-KP_ANGULAR = 1.5
-
-MAX_LINEAR = 0.5
-MAX_ANGULAR = 1.0
-# -------------------------------------------
+class State(Enum):
+    IDLE = 0
+    DETECTING = 1
+    APPROACHING = 2
+    DONE = 3
 
 
-def normalize(a):
-    while a > math.pi:
-        a -= 2 * math.pi
-    while a < -math.pi:
-        a += 2 * math.pi
-    return a
-
-
-class OdomController(Node):
+class ArucoFollower(Node):
 
     def __init__(self):
-        super().__init__('odom_controller')
+        super().__init__('aruco_follower')
 
-        self.pose_x = None
-        self.pose_y = None
-        self.pose_yaw = None
+        self.state = State.IDLE
 
-        self.goal = None
-        self.goal_reached = False
+        # TF
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
 
-        self.create_subscription(Odometry, '/odom', self.odom_cb, 10)
-        self.create_subscription(PoseStamped, '/odom_nav/goal', self.goal_cb, 10)
-
+        # Velocity publisher
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
-        self.done_pub = self.create_publisher(PoseStamped, '/odom_nav/done', 10)
 
-        self.timer = self.create_timer(1.0 / CONTROL_HZ, self.control_loop)
+        # Timer loop
+        self.timer = self.create_timer(0.1, self.run)
 
-        self.get_logger().info("✅ Odom Controller running (deterministic)")
+        self.marker_frame = "1039_obj"
+        self.base_frame = "ebot_base_link"
 
-    # ---------- Callbacks ----------
+    # ---------------------------
+    # TF
+    # ---------------------------
 
-    def odom_cb(self, msg):
-        p = msg.pose.pose.position
-        q = msg.pose.pose.orientation
+    def get_marker_transform(self):
+        try:
+            return self.tf_buffer.lookup_transform(
+                self.base_frame,
+                self.marker_frame,
+                rclpy.time.Time()
+            )
+        except:
+            return None
 
-        self.pose_x = p.x
-        self.pose_y = p.y
+    # ---------------------------
+    # Control
+    # ---------------------------
 
-        siny = 2.0 * (q.w * q.z + q.x * q.y)
-        cosy = 1.0 - 2.0 * (q.y*q.y + q.z*q.z)
-        self.pose_yaw = math.atan2(siny, cosy)
+    def compute_control(self, transform):
+        twist = Twist()
 
-    def goal_cb(self, msg: PoseStamped):
-        self.goal = msg
-        self.goal_reached = False
-        self.get_logger().info("🎯 New goal received by controller")
+        dx = transform.transform.translation.x
+        dy = transform.transform.translation.y
 
-    # ---------- Control ----------
+        distance = math.sqrt(dx**2 + dy**2)
+        angle = math.atan2(dy, dx)
 
-    def control_loop(self):
-        if self.goal is None or self.pose_x is None:
-            return
+        # Gains
+        k_ang = 2.0
+        k_lin = 0.5
 
-        gx = self.goal.pose.position.x
-        gy = self.goal.pose.position.y
-
-        # yaw from quaternion (goal)
-        q = self.goal.pose.orientation
-        siny = 2.0 * (q.w * q.z + q.x * q.y)
-        cosy = 1.0 - 2.0 * (q.y*q.y + q.z*q.z)
-        gyaw = math.atan2(siny, cosy)
-
-        dx = gx - self.pose_x
-        dy = gy - self.pose_y
-        dist = math.hypot(dx, dy)
-
-        angle_to_goal = math.atan2(dy, dx)
-        heading_error = normalize(angle_to_goal - self.pose_yaw)
-        yaw_error = normalize(gyaw - self.pose_yaw)
-
-        cmd = Twist()
-
-        if dist > POS_TOLERANCE:
-            if abs(heading_error) > 0.15:
-                cmd.angular.z = max(-MAX_ANGULAR, min(MAX_ANGULAR, KP_ANGULAR * heading_error))
-            else:
-                cmd.linear.x = min(MAX_LINEAR, KP_LINEAR * dist)
-                cmd.angular.z = max(-MAX_ANGULAR, min(MAX_ANGULAR, KP_ANGULAR * heading_error))
+        # If angle large → rotate only
+        if abs(angle) > 0.2:
+            twist.angular.z = k_ang * angle
+            twist.linear.x = 0.0
         else:
-            if abs(yaw_error) > YAW_TOLERANCE:
-                cmd.angular.z = max(-MAX_ANGULAR, min(MAX_ANGULAR, KP_ANGULAR * yaw_error))
-            else:
-                self.cmd_pub.publish(Twist())
-                self.done_pub.publish(self.goal)
-                self.goal = None
+            twist.angular.z = k_ang * angle
+            twist.linear.x = k_lin * distance
+
+        return twist, distance, angle
+
+    # ---------------------------
+    # State Machine
+    # ---------------------------
+
+    def run(self):
+
+        # ---- IDLE ----
+        if self.state == State.IDLE:
+            self.get_logger().info("Waiting for marker...")
+            self.state = State.DETECTING
+
+        # ---- DETECTING ----
+        elif self.state == State.DETECTING:
+            trans = self.get_marker_transform()
+
+            if trans:
+                self.get_logger().info("Marker detected → approaching")
+                self.state = State.APPROACHING
+
+        # ---- APPROACHING ----
+        elif self.state == State.APPROACHING:
+            trans = self.get_marker_transform()
+
+            if not trans:
+                self.get_logger().warn("Marker lost!")
                 return
 
-        self.cmd_pub.publish(cmd)
+            twist, dist, angle = self.compute_control(trans)
+
+            self.get_logger().info(f"Dist: {dist:.2f}, Angle: {angle:.2f}")
+
+            # Stop condition
+            if dist <= 0.4:
+                self.get_logger().info("Reached target distance")
+
+                stop = Twist()
+                self.cmd_pub.publish(stop)
+
+                self.state = State.DONE
+                return
+
+            self.cmd_pub.publish(twist)
+
+        # ---- DONE ----
+        elif self.state == State.DONE:
+            self.get_logger().info("Task completed")
+            self.timer.cancel()
 
 
-def main():
-    rclpy.init()
-    node = OdomController()
-    rclpy.spin(node)
+def main(args=None):
+    rclpy.init(args=args)
+
+    node = ArucoFollower()
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+
     node.destroy_node()
     rclpy.shutdown()
-
-
-if __name__ == '__main__':
-    main()

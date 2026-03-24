@@ -1,12 +1,23 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction, SetEnvironmentVariable
+from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, EnvironmentVariable
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
+    # -----------------------------
+    # Set GZ_SIM_RESOURCE_PATH
+    # -----------------------------
+    set_gz_resource_path = SetEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
+        value=[
+            EnvironmentVariable('GZ_SIM_RESOURCE_PATH'),
+            ':',
+            '/home/rajvardhan/mobile_manipulator/src/ebot_description/models'
+        ]
+    )
 
     # -----------------------------
     # Gazebo Harmonic
@@ -49,7 +60,7 @@ def generate_launch_description():
             'use_sim_time',
             default_value='true'
         ),
-
+        set_gz_resource_path,
         gz_sim,
         clock_bridge,
 

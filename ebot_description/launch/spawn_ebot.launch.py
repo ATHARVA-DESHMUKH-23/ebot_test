@@ -20,15 +20,17 @@ def generate_launch_description():
     ])
 
     robot_description = {
-        'robot_description': ParameterValue(
-            Command([
-                'xacro ',
-                xacro_file,
-                ' use_gazebo:=true'
-            ]),
-            value_type=str
-        )
-    }
+    'robot_description': ParameterValue(
+        Command([
+            'xacro ',
+            xacro_file,
+            ' use_gazebo:=true',
+            ' use_hardware:=false',
+            ' use_gripper:=true'
+        ]),
+        value_type=str
+    )
+}
 
     # -----------------------------
     # Spawn robot

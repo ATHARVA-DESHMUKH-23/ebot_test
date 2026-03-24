@@ -6,8 +6,13 @@
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot_gazebo_control.xacro"/>
   <xacro:include filename="$(find moveo_description)/urdf/moveo_urdf.urdf.xacro"/>
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot_ros2_control.xacro"/>
-
+  
+  <xacro:arg name="use_hardware" default="false"/>
+  <xacro:arg name="use_gripper" default="true"/>
+  
   <xacro:moveo_arm prefix="moveo_"/>
+
+
 
 
   <!-- ===================== -->
@@ -152,38 +157,6 @@
   </joint>
 
 
-  <!-- ===================== -->
-  <!-- TRANSMISSIONS -->
-  <!-- ===================== -->
-<!-- 
-  <transmission name="FWR_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="FWRJ">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="FWR_motor">
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-
-  <transmission name="FWL_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="FWLJ">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="FWL_motor">
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission> -->
-
-  <!-- ===================== -->
-  <!-- OMNI CASTERS (SWIVEL + ROLL) -->
-  <!-- ===================== -->
-
-  <!-- ===================== -->
-<!-- BALL CASTERS (4-DIRECTION SUPPORT) -->
-<!-- ===================== -->
-
 <!-- FRONT ball caster -->
 <link name="BC_FRONT">
   <visual>
@@ -326,8 +299,15 @@
     <child link="imu_link"/>
   </joint>
 
-<xacro:ebot_ros2_control/>
-<xacro:ebot_gazebo_ros2_control/>
+<!-- ROS2 CONTROL -->
+<xacro:ebot_ros2_control 
+    use_hardware="$(arg use_hardware)" 
+    use_gripper="$(arg use_gripper)"/>
+
+<!-- Gazebo only if simulation -->
+<xacro:if value="$(arg use_gazebo)">
+  <xacro:ebot_gazebo_ros2_control/>
+</xacro:if>
 
 </robot>
 

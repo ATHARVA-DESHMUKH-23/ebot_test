@@ -24,6 +24,8 @@ def generate_launch_description():
                 'xacro ',
                 xacro_file,
                 ' use_gazebo:=false'
+                ' use_hardware:=true',
+                ' use_gripper:=false'
             ]),
             value_type=str
         )
