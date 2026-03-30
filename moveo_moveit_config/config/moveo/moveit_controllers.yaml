@@ -16,9 +16,9 @@ moveit_simple_controller_manager:
       - Joint_4
       - Joint_5
 
-gripper_controller:
-  action_ns: follow_joint_trajectory
-  type: FollowJointTrajectory
-  joints:
-    - Gripper_Servo_Gear_Joint
-    - Gripper_Idol_Gear_Joint
+  gripper_controller:
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    joints:
+      - Gripper_Servo_Gear_Joint
+      - Gripper_Idol_Gear_Joint

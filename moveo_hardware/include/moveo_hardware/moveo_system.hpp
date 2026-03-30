@@ -40,8 +40,9 @@ private:
   std::vector<double> hw_commands_;
 
   long last_steps_[5] = {0, 0, 0, 0, 0};
+  int last_gripper_ = 0;
 
-  std::unordered_map<std::string, size_t> joint_name_to_index_;   // ✅ ADDED
+  std::unordered_map<std::string, size_t> joint_name_to_index_; 
 };
 
 }

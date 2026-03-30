@@ -103,9 +103,9 @@ class ArucoFollower(Node):
         pose.header.stamp = self.get_clock().now().to_msg()
 
         # Position
-        pose.pose.position.x = trans.transform.translation.y - 0.1  # offset
-        pose.pose.position.y = trans.transform.translation.x 
-        pose.pose.position.z = trans.transform.translation.z + 0.25  # offset
+        pose.pose.position.x = trans.transform.translation.y - 0.15  # offset
+        pose.pose.position.y = -trans.transform.translation.x 
+        pose.pose.position.z = trans.transform.translation.z + 0.0  # offset
 
         # Orientation (simple for now)
         pose.pose.orientation.w = 1.0
@@ -149,7 +149,7 @@ class ArucoFollower(Node):
 
             self.get_logger().info(f"Dist: {dist:.2f}, Angle: {angle:.2f}")
 
-            if dist <= 0.5:
+            if dist <= 0.6:
                 self.get_logger().info("Reached target distance")
 
                 self.stop_robot()

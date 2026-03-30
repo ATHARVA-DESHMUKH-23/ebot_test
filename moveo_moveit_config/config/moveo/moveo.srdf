@@ -10,13 +10,21 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="hand">
-        <!-- <joint name="Gripper_Idol_Gear_Joint" />
+        <joint name="Gripper_Idol_Gear_Joint" />
         <joint name="Tip_Gripper_Idol_Joint" />
         <joint name="Gripper_Servo_Gear_Joint" />
-        <joint name="Tip_Gripper_Servo_Joint" /> -->
+        <joint name="Tip_Gripper_Servo_Joint" />
         <joint name="Pivot_Arm_Gripper_Idol_Joint" />
         <joint name="Pivot_Arm_Gripper_Servo_Joint" />
     </group>
+    <group_state name="close_gripper" group="hand">
+        <joint name="Gripper_Idol_Gear_Joint" value="-1.3431" />
+        <joint name="Gripper_Servo_Gear_Joint" value="1.3433" />
+    </group_state>
+    <group_state name="open_gripper" group="hand">
+        <joint name="Gripper_Idol_Gear_Joint" value="0.0" />
+        <joint name="Gripper_Servo_Gear_Joint" value="0.0" />
+    </group_state>
     <group name="arm">
         <chain base_link="moveo_base_link" tip_link="Link_5" />
     </group>
@@ -28,6 +36,17 @@
         <joint name="Joint_4" value="0" />
         <joint name="Joint_5" value="0" />
     </group_state>
+   
+<!-- - positions: [-0.0, 0.7, -1.5, 0.0, -0.6] -->
+
+    <group_state name="Ready" group="arm">
+        <joint name="Joint_1" value="0" />
+        <joint name="Joint_2" value="0.7" />
+        <joint name="Joint_3" value="-1.5" />
+        <joint name="Joint_4" value="0.0" />
+        <joint name="Joint_5" value="-0.6" />
+    </group_state>
+    
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="hand" parent_link="Link_5" group="hand" parent_group="arm" />
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->

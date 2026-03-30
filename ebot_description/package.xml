@@ -12,7 +12,6 @@
 
   <depend>rclcpp</depend>
   <depend>rclpy</depend>
-  <depend>payload_service</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>ros_gz_bridge</depend>

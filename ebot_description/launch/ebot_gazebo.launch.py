@@ -15,7 +15,7 @@ def generate_launch_description():
         value=[
             EnvironmentVariable('GZ_SIM_RESOURCE_PATH'),
             ':',
-            '/home/rajvardhan/mobile_manipulator/src/ebot_description/models'
+            '/home/rajvardhan/mobile_manipulator/src/ebot_description/models/workshop_models',
         ]
     )
 
@@ -25,7 +25,7 @@ def generate_launch_description():
     world_file = PathJoinSubstitution([
         FindPackageShare('ebot_description'),
         'worlds',
-        'officemap3.world'
+        'workshop_example.world'
     ])
 
     gz_sim = ExecuteProcess(

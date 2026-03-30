@@ -23,9 +23,9 @@ def generate_launch_description():
             Command([
                 'xacro ',
                 xacro_file,
-                ' use_gazebo:=false'
+                ' use_gazebo:=false',
                 ' use_hardware:=true',
-                ' use_gripper:=false'
+                ' use_gripper:=true'
             ]),
             value_type=str
         )
@@ -70,6 +70,13 @@ def generate_launch_description():
         output='screen'
     )
 
+    gripper_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['gripper_controller'],
+        output='screen'
+    )
+
     # -----------------------------
     # Robot State Publisher (REAL TIME)
     # -----------------------------
@@ -90,5 +97,6 @@ def generate_launch_description():
         ros2_control_node,
         joint_state_broadcaster_spawner,
         arm_controller_spawner,
+        gripper_controller_spawner,
         robot_state_publisher
     ])

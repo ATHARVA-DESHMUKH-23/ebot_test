@@ -8,9 +8,9 @@ slam_toolbox:
     scan_topic: scan
 
     # Mode
-    mode: localization
+    mode: mapping
     # map_file_name: /home/rajvardhan/mobile_manipulator/map/gazebo_map/office_map
-    map_file_name: /home/rajvardhan/mobile_manipulator/map/office_map5
+    # map_file_name: /home/rajvardhan/mobile_manipulator/map/office_map5
 
     # Timing
     transform_timeout: 0.2

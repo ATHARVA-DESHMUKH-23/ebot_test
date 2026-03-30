@@ -32,8 +32,9 @@ hardware_interface::CallbackReturn MoveoSystem::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  hw_positions_.resize(5, 0.0);
-  hw_commands_.resize(5, 0.0);
+  hw_positions_.resize(info_.joints.size(), 0.0);
+  hw_commands_.resize(info_.joints.size(), 0.0);
+
   for (size_t i = 0; i < info_.joints.size(); ++i)
   {
     joint_name_to_index_[info_.joints[i].name] = i;
@@ -77,7 +78,7 @@ hardware_interface::CallbackReturn MoveoSystem::on_activate(
   tty.c_iflag = 0;
 
   tty.c_cc[VMIN]  = 0;
-  tty.c_cc[VTIME] = 10;
+  tty.c_cc[VTIME] = 0;
 
   tcsetattr(serial_fd_, TCSANOW, &tty);
 
@@ -100,7 +101,7 @@ MoveoSystem::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
 
-  for (size_t i = 0; i < 5; ++i)
+  for (size_t i = 0; i < info_.joints.size(); ++i)
   {
     state_interfaces.emplace_back(
         hardware_interface::StateInterface(
@@ -117,7 +118,7 @@ MoveoSystem::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
 
-  for (size_t i = 0; i < 5; ++i)
+  for (size_t i = 0; i < info_.joints.size(); ++i)
   {
     command_interfaces.emplace_back(
         hardware_interface::CommandInterface(
@@ -162,12 +163,16 @@ hardware_interface::return_type MoveoSystem::write(
   size_t idx3 = joint_name_to_index_["Joint_3"];
   size_t idx4 = joint_name_to_index_["Joint_4"];
   size_t idx5 = joint_name_to_index_["Joint_5"];
-
+  size_t grip_idx = joint_name_to_index_["Gripper_Servo_Gear_Joint"];
+  size_t grip2_idx = joint_name_to_index_["Gripper_Idol_Gear_Joint"];
+  hw_commands_[grip2_idx] = -hw_commands_[grip_idx];
   long s1 = rad_to_steps(hw_commands_[idx1], 0);
   long s2 = rad_to_steps(hw_commands_[idx2], 1);
   long s3 = rad_to_steps(hw_commands_[idx3], 2);
   long s4 = rad_to_steps(hw_commands_[idx4], 3);
   long s5 = rad_to_steps(hw_commands_[idx5], 4);
+  double grip_rad = hw_commands_[grip_idx];
+  int grip_val = static_cast<int>(grip_rad * 180.0 / M_PI);
 
   long steps[5] = {s1, s2, s3, s4, s5};
 
@@ -181,17 +186,24 @@ hardware_interface::return_type MoveoSystem::write(
       break;
     }
   }
+  // check gripper
+  if (grip_val != last_gripper_)
+  {
+    changed = true;
+  }
 
   if (changed)
   {
     snprintf(buffer, sizeof(buffer),
-            "CMD %ld %ld %ld %ld %ld\n",
-            s1, s2, s3, s4, s5);
+            "CMD %ld %ld %ld %ld %ld G %d\n",
+            s1, s2, s3, s4, s5, grip_val);
 
     ::write(serial_fd_, buffer, strlen(buffer));
 
     for (int i = 0; i < 5; i++)
       last_steps_[i] = steps[i];
+    
+    last_gripper_ = grip_val;
   }
 
   return hardware_interface::return_type::OK;
@@ -204,30 +216,44 @@ hardware_interface::return_type MoveoSystem::read(
   if (serial_fd_ < 0)
     return hardware_interface::return_type::ERROR;
 
-  char buffer[128];
-  int n = ::read(serial_fd_, buffer, sizeof(buffer) - 1);
+  static std::string serial_buffer;   // ADD THIS (top of function or static)
+
+  char temp[128];
+  int n = ::read(serial_fd_, temp, sizeof(temp));
 
   if (n <= 0)
   {
     return hardware_interface::return_type::OK;
   }
 
-  if (n > 0)
+  // append new data
+  serial_buffer.append(temp, n);
+
+  // process full lines only
+  size_t pos;
+  while ((pos = serial_buffer.find('\n')) != std::string::npos)
   {
-    buffer[n] = '\0';
-    RCLCPP_INFO(rclcpp::get_logger("MoveoSystem"),
-                "Received raw: %s", buffer);
+    std::string line = serial_buffer.substr(0, pos);
+    serial_buffer.erase(0, pos + 1);
 
     long s1, s2, s3, s4, s5;
+    int grip;
+    size_t grip_idx = joint_name_to_index_["Gripper_Servo_Gear_Joint"];
+    size_t grip2_idx = joint_name_to_index_["Gripper_Idol_Gear_Joint"];
 
-    if (sscanf(buffer, "FB %ld %ld %ld %ld %ld",
-               &s1, &s2, &s3, &s4, &s5) == 5)
+    
+
+    if (sscanf(line.c_str(), "FB %ld %ld %ld %ld %ld G %d",
+              &s1, &s2, &s3, &s4, &s5, &grip) == 6)
     {
       hw_positions_[joint_name_to_index_["Joint_1"]] = steps_to_rad(s1, 0);
       hw_positions_[joint_name_to_index_["Joint_2"]] = steps_to_rad(s2, 1);
       hw_positions_[joint_name_to_index_["Joint_3"]] = steps_to_rad(s3, 2);
       hw_positions_[joint_name_to_index_["Joint_4"]] = steps_to_rad(s4, 3);
       hw_positions_[joint_name_to_index_["Joint_5"]] = steps_to_rad(s5, 4);
+      double grip_rad = grip * M_PI / 180.0;
+      hw_positions_[grip_idx] = grip_rad;
+      hw_positions_[grip2_idx] = -grip_rad;
     }
   }
 

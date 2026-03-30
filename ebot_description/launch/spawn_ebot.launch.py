@@ -39,11 +39,11 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         arguments=[
-            '-world', 'floorplan_world',
+            '-world', 'default',
             '-topic', 'robot_description',
             '-name', 'ebot', #12.602; -8.2693; 0
-            '-x', '12.602',
-            '-y', '-8.2693',
+            '-x', '0.0',
+            '-y', '-0.0',
             '-z', '0.1'
         ],
         output='screen'

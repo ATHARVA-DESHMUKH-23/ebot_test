@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(moveit_visual_tools REQUIRED)
 
 add_executable(hello_moveit src/hello_moveit.cpp)
 target_include_directories(hello_moveit PUBLIC
@@ -38,7 +39,37 @@ ament_target_dependencies(
   "rclcpp"
 )
 
+add_executable(hello_moveit_pose src/hello_moveit_pose.cpp)
+
+target_include_directories(hello_moveit_pose PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+
+target_compile_features(hello_moveit_pose PUBLIC c_std_99 cxx_std_17)
+
+ament_target_dependencies(
+  hello_moveit_pose
+  "moveit_ros_planning_interface"
+  "rclcpp"
+)
+
+
 install(TARGETS moveit_aruco
+  DESTINATION lib/${PROJECT_NAME})
+
+add_executable(plan_around_objects src/plan_around_objects.cpp)
+target_include_directories(plan_around_objects PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+target_compile_features(plan_around_objects PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  plan_around_objects
+  "moveit_msgs"
+  "moveit_ros_planning_interface"
+  "moveit_visual_tools"
+  "rclcpp"
+)
+install(TARGETS plan_around_objects
   DESTINATION lib/${PROJECT_NAME})
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

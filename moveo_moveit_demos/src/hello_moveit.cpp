@@ -5,6 +5,9 @@
 #include <moveit/move_group_interface/move_group_interface.hpp>
 #include <thread>
 #include <rclcpp/executors/single_threaded_executor.hpp>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#include <tf2/LinearMath/Matrix3x3.h>
+
 /**
  * @brief The main function that starts our program.
  *
@@ -50,7 +53,9 @@ int main(int argc, char * argv[])
   arm_group_interface.setPlannerId("RRTConnectkConfigDefault");
 
   // Specify the maximum amount of time in seconds to use when planning
-  arm_group_interface.setPlanningTime(1.0);
+  arm_group_interface.setStartStateToCurrentState();
+  arm_group_interface.setPlanningTime(5.0);
+  arm_group_interface.setNumPlanningAttempts(10);
 
   // Set a scaling factor for optionally reducing the maximum joint velocity. Allowed values are in (0,1].
   arm_group_interface.setMaxVelocityScalingFactor(1.0);
@@ -65,35 +70,86 @@ int main(int argc, char * argv[])
   while (!arm_group_interface.getCurrentState(1.0)) {
     RCLCPP_WARN(logger, "Waiting for current robot state...");
   }
+  // auto pose = arm_group_interface.getCurrentPose();
+  // RCLCPP_INFO(logger, "Current: x=%.3f y=%.3f z=%.3f pose_x=%.3f pose_y=%.3f pose_z=%.3f pose_w=%.3f",
+  //   pose.pose.position.x,
+  //   pose.pose.position.y,
+  //   pose.pose.position.z,
+  //   pose.pose.orientation.x,
+  //   pose.pose.orientation.y,
+  //   pose.pose.orientation.z,
+  //   pose.pose.orientation.w);
+
   auto pose = arm_group_interface.getCurrentPose();
-  RCLCPP_INFO(logger, "Current: x=%.3f y=%.3f z=%.3f",
+
+  // Convert quaternion → RPY
+  tf2::Quaternion q(
+    pose.pose.orientation.x,
+    pose.pose.orientation.y,
+    pose.pose.orientation.z,
+    pose.pose.orientation.w
+  );
+
+  double roll, pitch, yaw;
+  tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
+
+  RCLCPP_INFO(logger,
+    "Position: x=%.3f y=%.3f z=%.3f | RPY: roll=%.3f pitch=%.3f yaw=%.3f",
     pose.pose.position.x,
     pose.pose.position.y,
-    pose.pose.position.z);
+    pose.pose.position.z,
+    roll, pitch, yaw
+  );
+  auto current_pose = arm_group_interface.getCurrentPose();
   // Set a target pose for the end effector of the arm
-  auto const arm_target_pose = [&node]{
-    geometry_msgs::msg::PoseStamped msg;
-    msg.header.frame_id = "moveo_base_link";
-    msg.header.stamp = node->now();
-    msg.pose.position.x = 0.061;
-    msg.pose.position.y = -0.176;
-    msg.pose.position.z = 0.168;
-    msg.pose.orientation.x = 1.0;
-    msg.pose.orientation.y = 0.0;
-    msg.pose.orientation.z = 0.0;
-    msg.pose.orientation.w = 0.0;
-    return msg;
-  }();
+  // auto const arm_target_pose = [&node]{
+  //   geometry_msgs::msg::PoseStamped msg;
+  //   msg.header.frame_id = "moveo_base_link";
+  //   msg.header.stamp = node->now();
+  //   msg.pose.position.x = 0.061;
+  //   msg.pose.position.y = -0.176;
+  //   msg.pose.position.z = 0.168;
+  //   msg.pose.orientation.x = 1.0;
+  //   msg.pose.orientation.y = 0.0;
+  //   msg.pose.orientation.z = 0.0;
+  //   msg.pose.orientation.w = 0.0;
+  //   return msg;
+  // }();
   double x, y, z;
 
   node->get_parameter("target_x", x);
   node->get_parameter("target_y", y);
   node->get_parameter("target_z", z);
 
+  // Use the current pose as a starting point and modify it to create the target pose
+  geometry_msgs::msg::Pose target_pose = current_pose.pose;
+
+  target_pose.position.x = x;
+  target_pose.position.y = y;
+  target_pose.position.z = z;
+  // target_pose.orientation.x = -0.455;
+  // target_pose.orientation.y = 0.456;
+  // target_pose.orientation.z = 0.541;
+  // target_pose.orientation.w = 0.541;
+  // target_pose.orientation.x = -0.631;
+  // target_pose.orientation.y = 0.764;
+  // target_pose.orientation.z = -0.041;
+  // target_pose.orientation.w = -0.126;
   RCLCPP_INFO(logger, "Target received: x=%.3f y=%.3f z=%.3f", x, y, z);
-  arm_group_interface.setPositionTarget(
-    x, y, z
-  );
+  // arm_group_interface.setPositionTarget(
+  //   x, y, z
+  // );
+  arm_group_interface.setGoalOrientationTolerance(0.54159); // ~8 degrees
+  arm_group_interface.setPoseTarget(target_pose);
+  double roll_target = 0.0;
+  double pitch_target = 0.0;   // try 90 deg
+  double yaw_target = 0.0;
+
+  tf2::Quaternion target_q;
+  target_q.setRPY(roll_target, pitch_target, yaw_target);
+  target_q.normalize();
+
+  target_pose.orientation = tf2::toMsg(target_q);
 // x=0.019 y=0.001 z=0.638
 
   // Create a plan to that target pose
