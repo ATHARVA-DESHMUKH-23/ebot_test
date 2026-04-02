@@ -5,6 +5,7 @@ from launch.actions import IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 import os
+from launch.actions import TimerAction
 
 
 def generate_launch_description():
@@ -70,37 +71,75 @@ def generate_launch_description():
         # ),
 
         # --------------------
-        # Fake Hardware Interface
+        # 2. Fake HW + Encoder (after 3 sec)
         # --------------------
-        Node(
-            package='ebot_serial',
-            executable='fake_hw_interface',
-            name='fake_hw_interface',
-            output='screen'
+        TimerAction(
+            period=3.0,
+            actions=[
+
+                Node(
+                    package='ebot_serial',
+                    executable='fake_hw_interface',
+                    name='fake_hw_interface',
+                    output='screen'
+                ),
+
+                Node(
+                    package='ebot_serial',
+                    executable='encoder_odimetery',
+                    name='encoder_odimetery',
+                    output='screen'
+                ),
+            ]
         ),
 
+
+         # --------------------
+        # 3. IMU + Magnetometer (after 5 sec total)
+        # (3 sec + 2 sec)
         # --------------------
-        # Encoder Odometry
-        # --------------------
-        Node(
-            package='ebot_serial',
-            executable='encoder_odimetery',
-            name='encoder_odimetery',
-            output='screen'
+        TimerAction(
+            period=4.0,
+            actions=[
+
+                Node(
+                    package='ebot_slam',
+                    executable='imu_yaw',
+                    name='imu_yaw',
+                    output='screen'
+                ),
+
+                Node(
+                    package='ebot_slam',
+                    executable='mag',
+                    name='mag',
+                    output='screen'
+                ),
+            ]
         ),
 
-        Node(
-            package='ebot_slam',
-            executable='imu_yaw',
-            name='imu_yaw',
-            output='screen'
-        ),
+       # --------------------
+        # 4. Arduino Communication (after 5 sec)
+        # (same stage as IMU → no delay between them)
+        # --------------------
+        TimerAction(
+            period=5.0,
+            actions=[
 
-        Node(
-            package='ebot_slam',
-            executable='mag',
-            name='mag',
-            output='screen'
+                Node(
+                    package='ebot_serial',
+                    executable='ebot_yaw',
+                    name='ebot_yaw',
+                    output='screen'
+                ),
+
+                Node(
+                    package='ebot_serial',
+                    executable='cmdvel_to_arduino',
+                    name='cmdvel_to_arduino',
+                    output='screen'
+                ),
+            ]
         ),
 
         
@@ -115,7 +154,36 @@ def generate_launch_description():
         # --------------------
         # RPLidar
         # --------------------
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(rplidar_launch_file)
+         # --------------------
+        # 5. RPLidar (after 6 sec)
+        # --------------------
+        TimerAction(
+            period=6.0,
+            actions=[
+                IncludeLaunchDescription(
+                    PythonLaunchDescriptionSource(rplidar_launch_file)
+                )
+            ]
+        ),
+       
+        # --------------------
+        # 6. EKF (LAST, after 10 sec)
+        # --------------------
+        TimerAction(
+            period=10.0,
+            actions=[
+
+                Node(
+                    package='robot_localization',
+                    executable='ekf_node',
+                    name='ekf_filter_node',
+                    output='screen',
+                    parameters=[os.path.join(
+                        pkg_ebot_description,
+                        'config',
+                        'ekf_config.yaml'
+                    )]
+                )
+            ]
         ),
     ])

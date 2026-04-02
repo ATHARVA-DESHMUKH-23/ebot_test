@@ -60,7 +60,7 @@ class CmdVelToArduino(Node):
     def send_serial(self):
 
         data = f"{self.v:.2f},{self.w:.2f},{self.bot_yaw:.2f}\n"
-        print(f"Sending to Arduino: {data.strip()}")
+        # print(f"Sending to Arduino: {data.strip()}")
 
         try:
             self.serial.write(data.encode())

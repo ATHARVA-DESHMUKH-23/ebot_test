@@ -9,8 +9,8 @@ slam_toolbox:
 
     # Mode
     mode: localization
-    map_file_name: /home/rajvardhan/mobile_manipulator/map/office_map5
-
+    map_file_name: /home/ebot/EBOT_TEST/map/office_map5
+# /home/ebot/EBOT_TEST/map/office_map5.pgm
 
     # Timing
     transform_timeout: 0.2

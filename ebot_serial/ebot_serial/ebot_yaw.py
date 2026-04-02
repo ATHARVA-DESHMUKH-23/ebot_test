@@ -42,7 +42,7 @@ class YawPublisher(Node):
         yaw_deg = math.degrees(yaw_rad)
 
         # Print nicely
-        self.get_logger().info(f"Yaw: {yaw_deg:.2f}°")
+        # self.get_logger().info(f"Yaw: {yaw_deg:.2f}°")
 
         yaw_msg = Float32()
         yaw_msg.data = yaw_deg   # publish degrees instead of radians
