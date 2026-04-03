@@ -2,7 +2,15 @@
 <robot name="ebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find ebot_description)/models/ebot/ebot.gazebo" />
-
+  <xacro:include filename="$(find ebot_description)/models/ebot/ebot_gazebo_control.xacro"/>
+  <xacro:include filename="$(find moveo_description)/urdf/moveo_urdf.urdf.xacro"/>
+  <xacro:include filename="$(find ebot_description)/models/ebot/ebot_ros2_control.xacro"/>
+  
+  <xacro:arg name="use_hardware" default="false"/>
+  <xacro:arg name="use_gripper" default="true"/>
+  <xacro:arg name="use_arm" default="true"/>
+  
+  
   <!-- ===================== -->
   <!-- PROPERTIES -->
   <!-- ===================== -->
@@ -65,6 +73,20 @@
     <parent link="ebot_base_link"/>
     <child link="ebot_base"/>
   </joint>
+
+
+  <!-- ===================== -->
+  <!-- ARM MOUNT -->
+  <!-- ===================== -->
+  <xacro:if value="$(arg use_arm)">
+    <xacro:moveo_arm prefix="moveo_"/>
+
+    <joint name="arm_mount_joint" type="fixed">
+      <parent link="ebot_base"/>
+      <child link="moveo_base_link"/>
+      <origin xyz="0 0 0.0" rpy="0 0 -1.5708"/>
+    </joint>
+  </xacro:if>
 
   <!-- ===================== -->
   <!-- DRIVE WHEELS -->
@@ -336,6 +358,19 @@
     <parent link="ebot_base"/>
     <child link="camera"/>
   </joint>
+
+
+<!-- ROS2 CONTROL -->
+<xacro:if value="$(arg use_arm)">
+  <xacro:ebot_ros2_control 
+      use_hardware="$(arg use_hardware)" 
+      use_gripper="$(arg use_gripper)"/>
+</xacro:if>
+
+<!-- Gazebo only if simulation -->
+<xacro:if value="$(arg use_gazebo)">
+  <xacro:ebot_gazebo_ros2_control/>
+</xacro:if>
 
 </robot>
 

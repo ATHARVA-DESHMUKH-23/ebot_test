@@ -1,0 +1,10 @@
+<library path="moveo_hardware">
+  <class
+    name="moveo_hardware/MoveoSystem"
+    type="moveo_hardware::MoveoSystem"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Moveo Arm ros2_control hardware interface using serial communication
+    </description>
+  </class>
+</library>

@@ -2,7 +2,6 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
-from std_msgs.msg import Float32
 import serial
 
 
@@ -13,7 +12,7 @@ class CmdVelToArduino(Node):
     def __init__(self):
         super().__init__('cmdvel_to_arduino')
 
-        self.serial = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+        self.serial = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
         # store latest values
         self.v = 0.0
@@ -61,24 +60,6 @@ class CmdVelToArduino(Node):
 
         data = f"{self.v:.2f},{self.w:.2f},{self.bot_yaw:.2f}\n"
         # print(f"Sending to Arduino: {data.strip()}")
-
-        try:
-            self.serial.write(data.encode())
-        except:
-            self.get_logger().warn("Serial write failed")
-
-        self.v = -msg.linear.x
-        self.w = -msg.angular.z
-
-
-    def yaw_callback(self, msg):
-        self.bot_yaw = msg.data
-
-
-    def send_serial(self):
-
-        data = f"{self.v:.2f},{self.w:.2f},{self.bot_yaw:.2f}\n"
-        print(f"Sending to Arduino: {data.strip()}")
 
         try:
             self.serial.write(data.encode())

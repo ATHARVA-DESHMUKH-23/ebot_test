@@ -1,0 +1,10 @@
+#Default initial positions for the robot joints. These can be used to set the robot to a known configuration at startup or for testing purposes.
+initial_positions:
+  Joint_1: 0.0
+  Joint_2: 0.0
+  Joint_3: 0.0
+  Joint_4: 0.0
+  Joint_5: 0.0
+
+  Pivot_Arm_Gripper_Idol_Joint: 0.0
+  Pivot_Arm_Gripper_Servo_Joint: 0.0

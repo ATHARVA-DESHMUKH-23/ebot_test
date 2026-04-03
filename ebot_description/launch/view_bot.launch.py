@@ -6,6 +6,8 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 import os
 from launch.actions import TimerAction
+from launch_ros.parameter_descriptions import ParameterValue
+
 
 
 def generate_launch_description():
@@ -21,7 +23,19 @@ def generate_launch_description():
         'ebot_description.xacro'
     )
 
-    robot_description = Command(['xacro ', xacro_file])
+    robot_description = {
+        'robot_description': ParameterValue(
+            Command([
+                'xacro ',
+                xacro_file,
+                ' use_gazebo:=false',
+                ' use_hardware:=true',
+                ' use_gripper:=true',
+                ' use_arm:=false'
+            ]),
+            value_type=str
+        )
+    }
 
     # --------------------
     # RPLidar Launch
@@ -51,9 +65,9 @@ def generate_launch_description():
             executable='robot_state_publisher',
             name='robot_state_publisher',
             output='screen',
-            parameters=[{
-                'robot_description': robot_description
-            }]
+            parameters=[
+                robot_description
+            ]
         ),
 
         Node(
