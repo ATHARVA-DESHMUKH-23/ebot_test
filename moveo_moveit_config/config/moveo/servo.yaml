@@ -1,0 +1,36 @@
+moveit_servo:
+  ros__parameters:
+    command_in_type: "twist"
+    
+    scale:
+      linear: 0.1
+      rotational: 0.1
+
+    publish_period: 0.01
+    command_out_type: trajectory_msgs/JointTrajectory
+
+    use_gazebo: true
+
+    move_group_name: arm
+    planning_frame: moveo_base_link
+    ee_frame_name: Link_5
+    robot_link_command_frame: Link_5
+
+    incoming_command_timeout: 0.1
+    num_outgoing_halt_msgs_to_publish: 4
+
+    lower_singularity_threshold: 17.0
+    hard_stop_singularity_threshold: 30.0
+
+    joint_limit_margin: 0.1
+
+    cartesian_command_in_topic: ~/delta_twist_cmds
+    joint_command_in_topic: ~/delta_joint_cmds
+    status_topic: ~/status
+
+    # 🔥 ADD THESE (CRITICAL)
+    publish_joint_positions: true
+    publish_joint_velocities: false
+    publish_joint_accelerations: false
+
+    smoothing_filter_plugin_name: "online_signal_smoothing::ButterworthFilterPlugin"

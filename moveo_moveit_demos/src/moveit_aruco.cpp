@@ -50,8 +50,8 @@ int main(int argc, char * argv[])
   arm_group.setPlanningPipelineId("ompl");
   arm_group.setPlannerId("RRTConnectkConfigDefault");
   arm_group.setPlanningTime(1.5);
-  arm_group.setMaxVelocityScalingFactor(1.0);
-  arm_group.setMaxAccelerationScalingFactor(1.0);
+  arm_group.setMaxVelocityScalingFactor(0.5);
+  arm_group.setMaxAccelerationScalingFactor(0.5);
 
   // Wait for robot state (Ctrl+C safe)
   while (rclcpp::ok() && !arm_group.getCurrentState(1.0)) {
@@ -92,6 +92,7 @@ int main(int argc, char * argv[])
     target_pose.pose.position.z);
     
   // Set the target pose for the end effector
+  arm_group.setGoalPositionTolerance(0.05);  // 5 cm tolerance
   arm_group.setPositionTarget(
       target_pose.pose.position.x,
       target_pose.pose.position.y,

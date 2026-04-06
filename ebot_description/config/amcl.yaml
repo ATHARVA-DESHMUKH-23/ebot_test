@@ -1,0 +1,19 @@
+amcl:
+  ros__parameters:
+
+    alpha1: 0.05
+    alpha2: 0.05
+    alpha3: 0.03
+    alpha4: 0.03
+    alpha5: 0.01
+
+    update_min_d: 0.20
+    update_min_a: 0.20
+
+    laser_likelihood_max_dist: 3.0
+    resample_interval: 2
+
+    min_particles: 500
+    max_particles: 1500
+
+    transform_tolerance: 1.0

@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from enum import Enum
 import tf2_ros
-from geometry_msgs.msg import TwistStamped, PoseStamped
+from geometry_msgs.msg import Twist, PoseStamped
 import math
 
 
@@ -25,13 +25,13 @@ class ArucoFollower(Node):
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
 
         # Publishers
-        self.cmd_pub = self.create_publisher(TwistStamped, '/cmd_vel', 10)
+        self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         self.arm_pub = self.create_publisher(PoseStamped, '/arm_target_pose', 10)
 
         # Timer
         self.timer = self.create_timer(0.1, self.run)
 
-        self.marker_frame = "1039_obj"
+        self.marker_frame = "aruco_0"
         self.base_frame = "ebot_base_link"
         self.arm_frame = "moveo_base_link"
 
@@ -63,9 +63,9 @@ class ArucoFollower(Node):
         distance = math.sqrt(dx**2 + dy**2)
         angle = math.atan2(dy, dx)
 
-        twist = TwistStamped()
-        twist.header.stamp = self.get_clock().now().to_msg()
-        twist.header.frame_id = self.base_frame
+        twist = Twist()
+        # twist.header.stamp = self.get_clock().now().to_msg()
+        # twist.header.frame_id = self.base_frame
 
         # Gains
         k_ang = 1.0
@@ -73,18 +73,18 @@ class ArucoFollower(Node):
 
         # Rotate first if needed
         if abs(angle) > 0.2:
-            twist.twist.angular.z = k_ang * angle
-            twist.twist.linear.x = 0.0
+           twist.angular.z = k_ang * angle
+           twist.linear.x = 0.0
         else:
-            twist.twist.angular.z = k_ang * angle
-            twist.twist.linear.x = min(k_lin * distance, 0.3)
+           twist.angular.z = k_ang * angle
+           twist.linear.x = min(k_lin * distance, 0.3)
 
         return twist, distance, angle
 
     def stop_robot(self):
-        stop = TwistStamped()
-        stop.header.stamp = self.get_clock().now().to_msg()
-        stop.header.frame_id = self.base_frame
+        stop = Twist()
+        # stop.header.stamp = self.get_clock().now().to_msg()
+        # stop.header.frame_id = self.base_frame
         self.cmd_pub.publish(stop)
 
     # ---------------------------
@@ -103,9 +103,9 @@ class ArucoFollower(Node):
         pose.header.stamp = self.get_clock().now().to_msg()
 
         # Position
-        pose.pose.position.x = trans.transform.translation.y - 0.15  # offset
+        pose.pose.position.x = trans.transform.translation.y - 0.0  # offset
         pose.pose.position.y = -trans.transform.translation.x 
-        pose.pose.position.z = trans.transform.translation.z + 0.0  # offset
+        pose.pose.position.z = trans.transform.translation.z + 0.1  # offset
 
         # Orientation (simple for now)
         pose.pose.orientation.w = 1.0
