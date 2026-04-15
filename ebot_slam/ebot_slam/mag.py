@@ -19,7 +19,7 @@ class FXOS8700Node(Node):
         import smbus
         import time
 
-        self.bus = smbus.SMBus(0)
+        self.bus = smbus.SMBus(1)
         self.addr = 0x1F
 
         # Check WHO_AM_I
@@ -33,17 +33,13 @@ class FXOS8700Node(Node):
         self.bus.write_byte_data(self.addr, 0x5B, 0x1F)  # hybrid mode
         self.bus.write_byte_data(self.addr, 0x2A, 0x0D)  # active
 
-       # Hard iron offsets
-        self.mag_offset_x = 24.5
-        self.mag_offset_y = -9.6
-        self.mag_offset_z = 39.65
+        self.mag_offset_x = 11.2
+        self.mag_offset_y = 26.35
+        self.mag_offset_z = -6.3
 
-        # Soft iron scale
-        self.mag_scale_x = 0.99
-        self.mag_scale_y = 1.01
-        self.mag_scale_z = 1.0
-
-
+        self.mag_scale_x = 0.70
+        self.mag_scale_y = 0.72
+        self.mag_scale_z = 1.00
         self.timer = self.create_timer(0.1, self.read_sensor)  # 50 Hz
 
         # ---- yaw rate helpers ----

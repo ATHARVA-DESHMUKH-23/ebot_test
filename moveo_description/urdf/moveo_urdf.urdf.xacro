@@ -387,6 +387,26 @@
         <mimic joint="Gripper_Idol_Gear_Joint" multiplier="1" offset="0" />
     </joint>
 
+    <link name="camera">
+        <visual>
+            <geometry>
+            <cylinder length="0.04" radius="0.01"/>
+            </geometry>
+            <material name="wheel_black">
+            <color rgba="0.02 0.02 0.02 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="camera_joint" type="fixed">
+        <!-- slightly forward + slightly up -->
+        <origin xyz="0.02 -0.02 0.0" rpy="0 0 0"/>
+        
+        <!-- IMPORTANT: attach to wrist, not base -->
+        <parent link="Gripper_Servo_Gear"/>
+        <child link="camera"/>
+    </joint>
+
 </xacro:macro>
-<xacro:include filename="sensors/intel_rgbd_cam_d435.urdf.xacro" />
+<!-- <xacro:include filename="sensors/intel_rgbd_cam_d435.urdf.xacro" /> -->
 </robot>

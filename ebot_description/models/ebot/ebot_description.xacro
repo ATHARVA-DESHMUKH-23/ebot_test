@@ -114,7 +114,7 @@
     </collision>
   </link>
 
-  <joint name="FWRJ" type="continuous">
+  <joint name="FWRJ" type="fixed">
     <origin xyz="0 -0.18 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWR"/>
@@ -143,7 +143,7 @@
     </collision>
   </link>
 
-  <joint name="FWLJ" type="continuous">
+  <joint name="FWLJ" type="fixed">
     <origin xyz="0 0.18 0.045"/>
     <parent link="ebot_base"/>
     <child link="FWL"/>
@@ -280,7 +280,8 @@
   </link>
 
   <joint name="lidar_joint" type="fixed">
-    <origin xyz="0.14 0.055 0.31"/>
+    <!-- <origin xyz="0.14 0.055 0.31"/> -->
+    <origin xyz="0.0 0.0 0.14"/>
     <parent link="ebot_base"/>
     <child link="laser"/>
   </joint>
@@ -341,9 +342,8 @@
   </joint>
 
 
-  <link name="camera">
+  <!-- <link name="camera">
     <visual>
-     <origin rpy="0 1.5708 0"/>
       <geometry>
         <cylinder length="0.04" radius="0.01"/>
       </geometry>
@@ -354,10 +354,10 @@
   </link>
 
   <joint name="camera_joint" type="fixed">
-    <origin xyz="0.14 0.052 0.24"/>
+    <origin xyz="0.14 0.052 0.24" rpy="1.57 3.14 1.57"/>
     <parent link="ebot_base"/>
     <child link="camera"/>
-  </joint>
+  </joint> -->
 
 
 <!-- ROS2 CONTROL -->

@@ -46,13 +46,24 @@ class FakeHWInterface(Node):
             Float32MultiArray, '/fake_encoders', 10
         )
 
-        # ---------------- SERIAL ----------------
+        # -----------------------------
+        # Declare parameters
+        # -----------------------------
+        self.declare_parameter('serial_port', '/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0')
+        self.declare_parameter('baudrate', 115200)
+
+        port = self.get_parameter('serial_port').get_parameter_value().string_value
+        baud = self.get_parameter('baudrate').get_parameter_value().integer_value
+
+        # -----------------------------
+        # Serial connection
+        # -----------------------------
         try:
-            self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
-            self.get_logger().info('Serial connected')
-        except:
-            self.ser = None
-            self.get_logger().warn('No serial connection')
+            self.serial = serial.Serial(port, baud, timeout=1)
+            self.get_logger().info(f"Connected to Arduino on {port} @ {baud}")
+        except Exception as e:
+            self.get_logger().error(f"Failed to open serial port {port}: {e}")
+            raise e
 
         self.timer = self.create_timer(0.02, self.update)
 
@@ -73,11 +84,11 @@ class FakeHWInterface(Node):
 
     # ------------------------------------------------
     def read_serial(self):
-        if not self.ser:
+        if not self.serial.is_open:
             return False
 
         try:
-            line = self.ser.readline().decode().strip()
+            line = self.serial.readline().decode().strip()
             if not line:
                 return False
 

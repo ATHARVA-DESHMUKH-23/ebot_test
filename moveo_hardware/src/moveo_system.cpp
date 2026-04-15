@@ -19,7 +19,7 @@ namespace moveo_hardware
 // Adjust these values according to your Moveo setup
 static const double STEPS_PER_REV = 200.0;      // Motor native steps
 static const double MICROSTEPPING = 16.0;        // TB6560 DIP switch value
-static const double GEAR_RATIO[5] = {1.0, 1.0, 1.0, 1.0, 1.0};  // Example ratios
+static const double GEAR_RATIO[5] = {9.5, 5.25, 18.75, 1.0625, 4.5};  // Example ratios
 
 // ================================
 

@@ -1,0 +1,9 @@
+scan_to_scan_filter_chain:
+  ros__parameters:
+    scan_filter_chain:
+      filter1:
+        name: range_filter
+        type: laser_filters/LaserScanRangeFilter
+        params:
+          lower_threshold: 0.5
+          upper_threshold: 12.0

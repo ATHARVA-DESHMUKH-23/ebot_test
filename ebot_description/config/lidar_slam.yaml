@@ -5,7 +5,7 @@ slam_toolbox:
     map_frame: map
     odom_frame: odom
     base_frame: ebot_base_link
-    scan_topic: scan
+    scan_topic: scan_filtered
 
     # Mode
     mode: localization

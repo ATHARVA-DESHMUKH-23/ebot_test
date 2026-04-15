@@ -34,6 +34,7 @@ setup(
             'start_3d_lidar =ebot_serial.start_3d_lidar:main',
             'ebot_yaw = ebot_serial.ebot_yaw:main',
             'ros_to_serial = ebot_serial.ros_to_serial:main',
+            'scan_filter_node = ebot_serial.scan_filter_node:main',
         ],
     },
 )
