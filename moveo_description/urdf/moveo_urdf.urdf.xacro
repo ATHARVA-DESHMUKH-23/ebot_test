@@ -18,9 +18,9 @@
 
     <link name="${prefix}base_link">
         <visual>
-            <origin xyz="0 0.0 0.08" rpy="0 0 0" />
+            <origin xyz="0.0 0.0 0.20" rpy="0 0 0" />
             <geometry>
-                <box size="0.20 0.24 0.13"/>
+                <box size="0.3 0.3 0.01"/>
                 <!-- <mesh filename="package://moveo_description/meshes/base_link.STL" /> -->
             </geometry>
             <material name="">
@@ -30,7 +30,7 @@
         <collision>
             <origin xyz="0 0 .13" rpy="0 0 0" />
             <geometry>
-                <box size="0.20 0.24 0.13"/>
+                <box size="0.3 0.3 0.01"/>
             </geometry>
         </collision>        
 	<inertial>
@@ -40,7 +40,7 @@
     </link>
 
     <joint name="Joint_1" type="revolute">
-	<origin xyz="0 0 .13" rpy="0 0 0" />
+	<origin xyz="0 0 .26" rpy="0 0 0" />
         <axis xyz="0 0 1" />
         <limit lower="-1.5707963268" upper="1.5707963268" effort="100" velocity="1.919862177191" />
         <parent link="${prefix}base_link" />
@@ -191,6 +191,22 @@
         <child link="Link_5" />
         <axis xyz="1 0 0" />
         <limit lower="-1.5707963268" upper="1.5707963268" effort="100" velocity="1.919862177191" />
+    </joint>
+
+    <link name="tool0">
+        <visual>
+            <geometry>
+                <sphere radius="0.001"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="tool0_joint" type="fixed">
+        <parent link="Link_5"/>
+        <child link="tool0"/>
+
+        <!-- tune this -->
+        <origin xyz="0 0 0.14" rpy="0 0 0"/>
     </joint>
 
     <link name="Gripper_Servo_Gear">
@@ -387,6 +403,26 @@
         <mimic joint="Gripper_Idol_Gear_Joint" multiplier="1" offset="0" />
     </joint>
 
+    <link name="camera">
+        <visual>
+            <geometry>
+            <cylinder length="0.04" radius="0.01"/>
+            </geometry>
+            <material name="wheel_black">
+            <color rgba="0.02 0.02 0.02 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="camera_joint" type="fixed">
+        <!-- slightly forward + slightly up -->
+        <origin xyz="0.02 -0.02 0.0" rpy="0 0 0"/>
+        
+        <!-- IMPORTANT: attach to wrist, not base -->
+        <parent link="Gripper_Servo_Gear"/>
+        <child link="camera"/>
+    </joint>
+
 </xacro:macro>
-<xacro:include filename="sensors/intel_rgbd_cam_d435.urdf.xacro" />
+<!-- <xacro:include filename="sensors/intel_rgbd_cam_d435.urdf.xacro" /> -->
 </robot>

@@ -39,6 +39,8 @@ setup(
             'kdl_fk_test = ebot_serial.kdl_fk:main',
             'aruco_perception = ebot_serial.aruco_perception:main',
             'aruco_state_machine = ebot_serial.aruco_state_machine:main',
+            'base_controller = ebot_serial.base_controller:main',
+            'aruco_perception_ir = ebot_serial.aruco_perception_ir:main',
         ],
     },
 )

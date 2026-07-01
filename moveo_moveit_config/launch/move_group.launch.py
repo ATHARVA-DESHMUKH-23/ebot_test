@@ -70,11 +70,19 @@ def generate_launch_description():
         name='rviz_config_package',
         default_value=package_name_moveit_config,
         description='Package containing the RViz configuration file')
+    
+    declare_use_base_cmd = DeclareLaunchArgument(
+        name='use_base',
+        default_value='false',
+        description='Enable mobile base in MoveIt'
+    )
 
     def configure_setup(context):
         """Configure MoveIt and create nodes with proper string conversions."""
         # Get the robot name as a string for use in MoveItConfigsBuilder
         robot_name_str = LaunchConfiguration('robot_name').perform(context)
+        use_base = LaunchConfiguration('use_base').perform(context)
+        use_base_bool = use_base.lower() == 'true'
 
         # Get package path
         pkg_share_moveit_config = pkg_share_moveit_config_temp.find(package_name_moveit_config)
@@ -87,18 +95,27 @@ def generate_launch_description():
         joint_limits_file_path = os.path.join(config_path, 'joint_limits.yaml')
         kinematics_file_path = os.path.join(config_path, 'kinematics.yaml')
         moveit_controllers_file_path = os.path.join(config_path, 'moveit_controllers.yaml')
-        srdf_model_path = os.path.join(config_path, f'{robot_name_str}.srdf')
+        if use_base_bool:
+            srdf_model_path = os.path.join(config_path, f'{robot_name_str}_base.srdf')
+        else:
+            srdf_model_path = os.path.join(config_path, f'{robot_name_str}.srdf')
         pilz_cartesian_limits_file_path = os.path.join(config_path, 'pilz_cartesian_limits.yaml')
 
         # Create MoveIt configuration
+        if use_base_bool:
+            pipelines = ["ompl"]
+        else:
+            pipelines = ["ompl", "pilz_industrial_motion_planner", "stomp"]
+        
         moveit_config = (
             MoveItConfigsBuilder(robot_name_str, package_name=package_name_moveit_config)
             .trajectory_execution(file_path=moveit_controllers_file_path)
             .robot_description_semantic(file_path=srdf_model_path)
             .joint_limits(file_path=joint_limits_file_path)
             .robot_description_kinematics(file_path=kinematics_file_path)
+            
             .planning_pipelines(
-                pipelines=["ompl", "pilz_industrial_motion_planner", "stomp"],
+                pipelines=pipelines,
                 default_planning_pipeline="ompl"
             )
             .planning_scene_monitor(
@@ -114,16 +131,23 @@ def generate_launch_description():
         move_group_capabilities = {"capabilities": "move_group/ExecuteTaskSolutionCapability"}
 
         # Create move_group node
+        parameters_list = [
+            moveit_config.to_dict(),
+            {'use_sim_time': use_sim_time},
+            {'start_state': {'content': initial_positions_file_path}},
+            move_group_capabilities,
+        ]
+        if use_base_bool:
+            parameters_list.insert(2, {
+                'trajectory_execution': {
+                    'control_multi_dof_joint_variables': True
+                }
+            })
         start_move_group_node_cmd = Node(
             package="moveit_ros_move_group",
             executable="move_group",
             output="screen",
-            parameters=[
-                moveit_config.to_dict(),
-                {'use_sim_time': use_sim_time},
-                {'start_state': {'content': initial_positions_file_path}},
-                move_group_capabilities,
-            ],
+            parameters=parameters_list,
         )
 
         # Create RViz node
@@ -166,6 +190,7 @@ def generate_launch_description():
     ld.add_action(declare_rviz_config_package_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_use_rviz_cmd)
+    ld.add_action(declare_use_base_cmd)
 
     # Add the setup and node creation
     ld.add_action(OpaqueFunction(function=configure_setup))

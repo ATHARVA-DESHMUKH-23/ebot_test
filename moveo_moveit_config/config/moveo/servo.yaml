@@ -1,18 +1,11 @@
 moveit_servo:
   ros__parameters:
-    command_in_type: "twist"
-    
-    scale:
-      linear: 0.1
-      rotational: 0.1
 
-    publish_period: 0.01
-    command_out_type: trajectory_msgs/JointTrajectory
-
-    use_gazebo: true
+    use_gazebo: false
 
     move_group_name: arm
-    planning_frame: moveo_base_link
+    planning_frame: ebot_base_link
+
     ee_frame_name: Link_5
     robot_link_command_frame: Link_5
 
@@ -21,16 +14,42 @@ moveit_servo:
 
     lower_singularity_threshold: 17.0
     hard_stop_singularity_threshold: 30.0
+    leaving_singularity_threshold_multiplier: 2.0
 
     joint_limit_margin: 0.1
 
+    command_out_topic: /arm_controller/joint_trajectory
+    command_out_type: trajectory_msgs/JointTrajectory
+
+    publish_period: 0.02
+
+    low_latency_mode: false
+
+    command_in_type: "speed_units"
+
     cartesian_command_in_topic: ~/delta_twist_cmds
     joint_command_in_topic: ~/delta_joint_cmds
+    pose_command_in_topic: ~/pose_target_cmds
+
     status_topic: ~/status
 
-    # 🔥 ADD THESE (CRITICAL)
-    publish_joint_positions: true
-    publish_joint_velocities: false
-    publish_joint_accelerations: false
+    joint_topic: /joint_states
+
+    check_collisions: true
+    collision_check_rate: 10.0
+
+    self_collision_proximity_threshold: 0.01
+    scene_collision_proximity_threshold: 0.02
+
+    use_smoothing: true
 
     smoothing_filter_plugin_name: "online_signal_smoothing::ButterworthFilterPlugin"
+
+    publish_joint_positions: true
+    publish_joint_velocities: true
+    publish_joint_accelerations: false
+
+    scale:
+      linear: 0.1
+      rotational: 0.2
+      joint: 0.5

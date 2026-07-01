@@ -1,4 +1,3 @@
-
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
@@ -20,6 +19,7 @@
 int main(int argc, char * argv[])
 {
   // Start up ROS 2
+  
   rclcpp::init(argc, argv);
 
   // Creates a node named "hello_moveit". The node is set up to automatically
@@ -33,16 +33,16 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
   std::thread([&executor]() { executor.spin(); }).detach();
-
+  
   // Creates a "logger" that we can use to print out information or error messages
   // as our program runs.
   auto const logger = rclcpp::get_logger("hello_moveit");
-
   // Create the MoveIt MoveGroup Interfaces
   // These interfaces are used to plan and execute movements, set target poses,
   // and perform other motion-related tasks for each respective part of the robot.
   // The use of auto allows the compiler to automatically deduce the type of variable.
   // Source: https://github.com/moveit/moveit2/blob/main/moveit_ros/planning_interface/move_group_interface/include/moveit/move_group_interface/move_group_interface.h
+  
   using moveit::planning_interface::MoveGroupInterface;
   auto arm_group_interface = MoveGroupInterface(node, "arm");
 
@@ -53,7 +53,9 @@ int main(int argc, char * argv[])
   arm_group_interface.setPlannerId("RRTConnectkConfigDefault");
 
   // Specify the maximum amount of time in seconds to use when planning
-  arm_group_interface.setStartStateToCurrentState();
+  // arm_group_interface.setStartStateToCurrentState();
+  moveit::core::RobotState start_state(*arm_group_interface.getCurrentState());
+  arm_group_interface.setStartState(start_state);
   arm_group_interface.setPlanningTime(5.0);
   arm_group_interface.setNumPlanningAttempts(10);
 
@@ -64,21 +66,16 @@ int main(int argc, char * argv[])
   arm_group_interface.setMaxAccelerationScalingFactor(1.0);
 
   // Display helpful logging messages on the terminal
+  RCLCPP_INFO(logger, "Planning frame: %s", arm_group_interface.getPlanningFrame().c_str());
+  RCLCPP_INFO(logger, "Pose reference frame: %s", arm_group_interface.getPoseReferenceFrame().c_str());
+  RCLCPP_INFO(logger, "EEF: %s",  arm_group_interface.getEndEffectorLink().c_str());
   RCLCPP_INFO(logger, "Planning pipeline: %s", arm_group_interface.getPlanningPipelineId().c_str());
   RCLCPP_INFO(logger, "Planner ID: %s", arm_group_interface.getPlannerId().c_str());
   RCLCPP_INFO(logger, "Planning time: %.2f", arm_group_interface.getPlanningTime());
   while (!arm_group_interface.getCurrentState(1.0)) {
     RCLCPP_WARN(logger, "Waiting for current robot state...");
   }
-  // auto pose = arm_group_interface.getCurrentPose();
-  // RCLCPP_INFO(logger, "Current: x=%.3f y=%.3f z=%.3f pose_x=%.3f pose_y=%.3f pose_z=%.3f pose_w=%.3f",
-  //   pose.pose.position.x,
-  //   pose.pose.position.y,
-  //   pose.pose.position.z,
-  //   pose.pose.orientation.x,
-  //   pose.pose.orientation.y,
-  //   pose.pose.orientation.z,
-  //   pose.pose.orientation.w);
+  
 
   auto pose = arm_group_interface.getCurrentPose();
 
@@ -101,20 +98,7 @@ int main(int argc, char * argv[])
     roll, pitch, yaw
   );
   auto current_pose = arm_group_interface.getCurrentPose();
-  // Set a target pose for the end effector of the arm
-  // auto const arm_target_pose = [&node]{
-  //   geometry_msgs::msg::PoseStamped msg;
-  //   msg.header.frame_id = "moveo_base_link";
-  //   msg.header.stamp = node->now();
-  //   msg.pose.position.x = 0.061;
-  //   msg.pose.position.y = -0.176;
-  //   msg.pose.position.z = 0.168;
-  //   msg.pose.orientation.x = 1.0;
-  //   msg.pose.orientation.y = 0.0;
-  //   msg.pose.orientation.z = 0.0;
-  //   msg.pose.orientation.w = 0.0;
-  //   return msg;
-  // }();
+  
   double x, y, z;
 
   node->get_parameter("target_x", x);
@@ -136,28 +120,38 @@ int main(int argc, char * argv[])
   // target_pose.orientation.z = -0.041;
   // target_pose.orientation.w = -0.126;
   RCLCPP_INFO(logger, "Target received: x=%.3f y=%.3f z=%.3f", x, y, z);
-  // arm_group_interface.setPositionTarget(
-  //   x, y, z
-  // );
+  // arm_group_interface.setPositionTarget(x, y, z);
   arm_group_interface.setGoalOrientationTolerance(0.54159); // ~8 degrees
   arm_group_interface.setPoseTarget(target_pose);
-  double roll_target = 0.0;
-  double pitch_target = 0.0;   // try 90 deg
-  double yaw_target = 0.0;
-
-  tf2::Quaternion target_q;
-  target_q.setRPY(roll_target, pitch_target, yaw_target);
-  target_q.normalize();
-
-  target_pose.orientation = tf2::toMsg(target_q);
-// x=0.019 y=0.001 z=0.638
+  
 
   // Create a plan to that target pose
   // This will give us two things:
   // 1. Whether the planning was successful (stored in 'success')
   // 2. The actual motion plan (stored in 'plan')
-  auto const [success, plan] = [&arm_group_interface] {
+  auto const [success, plan] = [&arm_group_interface, &logger] {
     moveit::planning_interface::MoveGroupInterface::Plan msg;
+    RCLCPP_INFO(logger, "Goal count = %zu",
+        arm_group_interface.getPoseTargets().size());
+
+    auto targets = arm_group_interface.getPoseTargets();
+
+    if (!targets.empty())
+    {
+        auto &p = targets[0].pose;
+        RCLCPP_INFO(logger,
+            "Goal pose: %.3f %.3f %.3f",
+            p.position.x,
+            p.position.y,
+            p.position.z);
+
+        RCLCPP_INFO(logger,
+            "Quat: %.3f %.3f %.3f %.3f",
+            p.orientation.x,
+            p.orientation.y,
+            p.orientation.z,
+            p.orientation.w);
+    }
     auto const ok = static_cast<bool>(arm_group_interface.plan(msg));
     return std::make_pair(ok, msg);
   }();
@@ -167,6 +161,7 @@ int main(int argc, char * argv[])
   // Execute the plan
   if (success)
   {
+    RCLCPP_INFO(logger, "Planning succeeded!");
     arm_group_interface.execute(plan);
   }
     else

@@ -34,6 +34,22 @@ class BaseController(Node):
 
         traj = goal_handle.request.trajectory
 
+        self.get_logger().info(
+            f"Joint names: {traj.joint_names}"
+        )
+
+        for i, p in enumerate(traj.points):
+            self.get_logger().info(
+                f"Point {i}: "
+                f"positions={list(p.positions)} "
+                f"time={p.time_from_start.sec + p.time_from_start.nanosec*1e-9:.3f}"
+            )
+
+        if len(p.velocities) > 0:
+            self.get_logger().info(
+                f"velocities={list(p.velocities)}"
+            )
+
         for i in range(len(traj.points) - 1):
 
             p1 = traj.points[i]
@@ -47,12 +63,17 @@ class BaseController(Node):
                 continue
 
             # global differences
-            dx = p2.positions[0] - p1.positions[0]
-            dy = p2.positions[1] - p1.positions[1]
-            dtheta = p2.positions[2] - p1.positions[2]
+            
+            dtheta = p2.positions[0] - p1.positions[0]
+            dx = p2.positions[1] - p1.positions[1]
+            dy = p2.positions[2] - p1.positions[2]
 
             # current orientation
-            theta = p1.positions[2]
+            theta = p1.positions[0]
+            self.get_logger().info(
+                f"Segment {i} → {i+1}: "
+                f"dx={dx:.3f} m, dy={dy:.3f} m, dtheta={dtheta:.3f} rad, dt={dt:.3f} s"
+            )
 
             # 🔥 convert world → robot frame
             vx = (dx * math.cos(theta) + dy * math.sin(theta)) / dt
@@ -61,7 +82,9 @@ class BaseController(Node):
             # 🔥 clamp velocities
             vx = max(min(vx, self.max_linear), -self.max_linear)
             wz = max(min(wz, self.max_angular), -self.max_angular)
-
+            self.get_logger().info(
+                f"Publishing cmd_vel: vx={vx:.3f} m/s, wz={wz:.3f} rad/s"
+            )
             # message
             msg = TwistStamped()
             msg.header.stamp = self.get_clock().now().to_msg()

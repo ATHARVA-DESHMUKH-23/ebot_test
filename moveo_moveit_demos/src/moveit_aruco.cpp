@@ -90,14 +90,20 @@ int main(int argc, char * argv[])
     target_pose.pose.position.x,
     target_pose.pose.position.y,
     target_pose.pose.position.z);
-    
+  
+  target_pose.pose.orientation.x = -0.5;
+  target_pose.pose.orientation.y = 0.5;
+  target_pose.pose.orientation.z = -0.5;
+  target_pose.pose.orientation.w = 0.5;
   // Set the target pose for the end effector
-  arm_group.setGoalPositionTolerance(0.05);  // 5 cm tolerance
-  arm_group.setPositionTarget(
-      target_pose.pose.position.x,
-      target_pose.pose.position.y,
-      target_pose.pose.position.z
-    );
+  arm_group.setGoalOrientationTolerance(0.44159); // 25 degrees tolerance
+  arm_group.setGoalPositionTolerance(0.01);  // 5 cm tolerance
+  // arm_group.setPositionTarget(
+  //     target_pose.pose.position.x,
+  //     target_pose.pose.position.y,
+  //     target_pose.pose.position.z
+  //   );
+  arm_group.setPoseTarget(target_pose);
 
   moveit::planning_interface::MoveGroupInterface::Plan plan;
   bool success = (arm_group.plan(plan) == moveit::core::MoveItErrorCode::SUCCESS);

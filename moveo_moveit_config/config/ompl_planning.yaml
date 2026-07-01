@@ -199,3 +199,15 @@ gripper:
     - SPARSkConfigDefault
     - SPARStwokConfigDefault
     - TrajOptDefault
+
+mobile_base_manipulator:
+  default_planner_config: RRTConnectkConfigDefault
+
+  projection_evaluator: joints(planar_joint)
+
+  longest_valid_segment_fraction: 0.02
+
+  planner_configs:
+    - RRTConnectkConfigDefault
+    - KPIECEkConfigDefault
+    - BKPIECEkConfigDefault

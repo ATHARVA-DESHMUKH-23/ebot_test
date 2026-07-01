@@ -22,7 +22,7 @@ int main(int argc, char * argv[])
   // Creates a node named "hello_moveit". The node is set up to automatically
   // handle any settings (parameters) we might want to change later without editing the code.
   auto const node = std::make_shared<rclcpp::Node>(
-    "hello_moveit",
+    "hello_moveit_pose",
     rclcpp::NodeOptions().automatically_declare_parameters_from_overrides(true)
   );
   
@@ -33,7 +33,7 @@ int main(int argc, char * argv[])
 
   // Creates a "logger" that we can use to print out information or error messages
   // as our program runs.
-  auto const logger = rclcpp::get_logger("hello_moveit");
+  auto const logger = rclcpp::get_logger("hello_moveit_pose");
 
   // Create the MoveIt MoveGroup Interfaces
   // These interfaces are used to plan and execute movements, set target poses,

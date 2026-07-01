@@ -46,6 +46,22 @@
         <joint name="Joint_4" value="0.0" />
         <joint name="Joint_5" value="-0.6" />
     </group_state>
+
+    <group_state name="Pick" group="arm">
+        <joint name="Joint_1" value="-0.2738619310397202" />
+        <joint name="Joint_2" value="-0.7456145262303463" />
+        <joint name="Joint_3" value="-0.8495554010163927" />
+        <joint name="Joint_4" value="0.03775126873822849" />
+        <joint name="Joint_5" value="-1.4005695312082656" />
+    </group_state>
+
+    <group_state name="Place" group="arm">
+        <joint name="Joint_1" value="-0.8261618048898853" />
+        <joint name="Joint_2" value="-1.1379783625183724" />
+        <joint name="Joint_3" value="-0.5215074200702482" />
+        <joint name="Joint_4" value="0.03975862961637971" />
+        <joint name="Joint_5" value="-1.400660923290717" />
+    </group_state>
     
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="hand" parent_link="Link_5" group="hand" parent_group="arm" />

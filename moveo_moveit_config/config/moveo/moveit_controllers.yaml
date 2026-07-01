@@ -4,6 +4,7 @@ moveit_simple_controller_manager:
   controller_names:
     - arm_controller
     - gripper_controller
+    - base_controller
 
   arm_controller:
     action_ns: follow_joint_trajectory
@@ -22,3 +23,12 @@ moveit_simple_controller_manager:
     joints:
       - Gripper_Servo_Gear_Joint
       - Gripper_Idol_Gear_Joint
+
+  # 🔥 ADD THIS BLOCK
+  base_controller:
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    joints:
+      - planar_joint/x
+      - planar_joint/y
+      - planar_joint/theta

@@ -12,6 +12,7 @@ install(
     meshes
     worlds
     config
+    urdf
   DESTINATION
     share/${PROJECT_NAME}
 )
