@@ -230,5 +230,6 @@ This project is intended for educational and research purposes.
 ## 👨‍💻 Author
 
 **Atharva Deshmukh**
+**Sumit Shelwane**
 
 If you found this project useful, consider giving the repository a ⭐.
