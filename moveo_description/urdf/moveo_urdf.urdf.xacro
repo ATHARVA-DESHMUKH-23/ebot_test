@@ -27,6 +27,16 @@
                 <color rgba="0.75294 0.75294 0.75294 1" />
             </material>
         </visual>
+        <visual>
+            <origin xyz="0.0 0.0 0.20" rpy="0 0 0" />
+            <geometry>
+                <!-- <box size="0.3 0.3 0.01"/> -->
+                <mesh filename="package://moveo_description/meshes/base_link.stl" />
+            </geometry>
+            <material name="">
+                <color rgba="0.75294 0.75294 0.75294 1" />
+            </material>
+        </visual>
         <collision>
             <origin xyz="0 0 .13" rpy="0 0 0" />
             <geometry>
@@ -53,8 +63,8 @@
             <geometry>
 		<mesh filename="package://moveo_description/meshes/Link_1_edited.STL" />
             </geometry>
-            <material name="">
-                <color rgba="0.75294 0.75294 0.75294 1" />
+            <material name="moveo_orange">
+                <color rgba="0.97 0.32 0.0 1.0"/>
             </material>
         </visual>
         <collision>
@@ -106,8 +116,8 @@
             <geometry>
 		<mesh filename="package://moveo_description/meshes/Link_3_edited.STL" />
             </geometry>
-            <material name="">
-                <color rgba="0.75294 0.75294 0.75294 1" />
+            <material name="moveo_orange">
+                <color rgba="0.97 0.32 0.0 1.0"/>
             </material>
         </visual>
         <collision>
@@ -168,8 +178,8 @@
             <geometry>
 		<mesh filename="package://moveo_description/meshes/Link_5_edited.STL" />
             </geometry>
-            <material name="">
-                <color rgba="0.75294 0.75294 0.75294 1" />
+            <material name="moveo_orange">
+                <color rgba="0.97 0.32 0.0 1.0"/>
             </material>
         </visual>
         <collision>
