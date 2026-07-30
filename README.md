@@ -8,7 +8,7 @@ Designed using **ROS 2**, **MoveIt 2**, **Nav2**, **Gazebo**, and **RViz**, the 
 
 ## 🎥 Demo
 
-> **[Insert Hero GIF here]**
+> https://youtube.com/shorts/StEAIy57eG4?si=CKmNXftdRG7HV4k_
 
 A short demonstration showing:
 
